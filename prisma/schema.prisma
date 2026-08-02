@@ -1,0 +1,343 @@
+// BlueSky Travel — Prisma schema (SQLite dev datasource)
+// Models are ready to be pushed via `bun run db:push` and consumed through `import { db } from '@/lib/db'`.
+// All TS interfaces in `src/types/index.ts` mirror these models 1:1 — swap dummy services for Prisma queries without touching components.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ===== Auth =====
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String?
+  avatarUrl    String?
+  phone        String?
+  role         String   @default("customer") // customer | agent | admin
+  nationality   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  bookings     Booking[]
+  reviews      Review[]
+  wishlist     WishlistItem[]
+  notifications Notification[]
+  invoices     Invoice[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ===== Geography =====
+
+model Country {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  continent   String
+  isoCode     String?
+  flagUrl     String?
+  imageUrl    String
+  description String?
+  visaRequired Boolean @default(false)
+  popularity  Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  cities       City[]
+  destinations Destination[]
+  trips        Trip[]
+  visas        Visa[]
+}
+
+model City {
+  id          String  @id @default(cuid())
+  name        String
+  slug        String
+  countryId   String
+  imageUrl    String
+  description String?
+  latitude    Float?
+  longitude   Float?
+  popularity  Int     @default(0)
+  country     Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
+
+  destinations Destination[]
+  hotels       Hotel[]
+  trips        Trip[]
+}
+
+// ===== Catalog =====
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  icon        String
+  description String?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+
+  trips Trip[]
+}
+
+model Destination {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String
+  countryId   String
+  cityId      String?
+  imageUrl    String
+  galleryUrls String   // JSON array stored as string
+  description String?
+  rating      Float    @default(0)
+  reviewCount Int      @default(0)
+  popularity  Int      @default(0)
+  country     Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  city        City?    @relation(fields: [cityId], references: [id], onDelete: Set Null)
+
+  trips Trip[]
+}
+
+model Trip {
+  id           String   @id @default(cuid())
+  title        String
+  slug         String   @unique
+  summary      String
+  description  String
+  countryId    String
+  cityId       String?
+  categoryId   String?
+  destinationId String?
+  type         String   // domestic | international
+  durationDays Int
+  price        Float
+  oldPrice     Float?
+  currency     String   @default("USD")
+  rating       Float    @default(0)
+  reviewCount  Int      @default(0)
+  maxTravelers Int      @default(12)
+  transportation String?
+  accommodation String?
+  mealPlan     String?
+  visaRequired Boolean  @default(false)
+  imageUrl     String
+  galleryUrls  String   // JSON array stored as string
+  included     String   // JSON array
+  excluded     String   // JSON array
+  itinerary    String   // JSON array of { day, title, description }
+  tags         String   // JSON array
+  featured     Boolean  @default(false)
+  popularity   Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  country     Country     @relation(fields: [countryId], references: [id])
+  city        City?       @relation(fields: [cityId], references: [id], onDelete: Set Null)
+  category    Category?   @relation(fields: [categoryId], references: [id], onDelete: Set Null)
+  destination Destination? @relation(fields: [destinationId], references: [id], onDelete: Set Null)
+
+  bookings Booking[]
+  reviews  Review[]
+  offers   Offer[]
+  tripDates TripDate[]
+}
+
+model TripDate {
+  id        String   @id @default(cuid())
+  tripId    String
+  startDate DateTime
+  endDate   DateTime
+  price     Float
+  availableSeats Int
+  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+}
+
+model Hotel {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String
+  cityId      String
+  stars       Int
+  description String
+  pricePerNight Float
+  currency    String   @default("USD")
+  rating      Float    @default(0)
+  reviewCount Int      @default(0)
+  imageUrl    String
+  galleryUrls String
+  facilities  String   // JSON array
+  roomTypes   String   // JSON array
+  latitude    Float?
+  longitude   Float?
+  address     String?
+  createdAt   DateTime @default(now())
+  city        City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+
+  bookings Booking[]
+}
+
+model Flight {
+  id            String   @id @default(cuid())
+  airline       String
+  flightNumber  String
+  originCity    String
+  destinationCity String
+  departureAt   DateTime
+  arrivalAt     DateTime
+  durationMins  Int
+  cabinClass    String   // economy | premium | business | first
+  stops         Int      @default(0)
+  price         Float
+  currency      String   @default("USD")
+  seatsLeft     Int      @default(0)
+  baggage       String?
+  createdAt     DateTime @default(now())
+}
+
+model Visa {
+  id              String   @id @default(cuid())
+  countryId       String
+  visaType        String   // tourist | business | student | transit
+  processingDays  Int
+  validityDays    Int
+  stayDays        Int
+  fee             Float
+  currency        String   @default("USD")
+  documentsNeeded String   // JSON array
+  requirements    String   // JSON array
+  imageUrl        String
+  country         Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+
+  bookings Booking[]
+}
+
+model Offer {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  code        String   @unique
+  discountPct Float
+  tripId      String?
+  imageUrl    String
+  startsAt    DateTime
+  endsAt      DateTime
+  createdAt   DateTime @default(now())
+  trip        Trip?    @relation(fields: [tripId], references: [id], onDelete: Set Null)
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  tripId    String?
+  hotelId   String?
+  rating    Float
+  title     String
+  body      String
+  isVerified Boolean @default(true)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trip      Trip?    @relation(fields: [tripId], references: [id], onDelete: Set Null)
+}
+
+// ===== Booking / Commerce =====
+
+model Booking {
+  id            String   @id @default(cuid())
+  reference     String   @unique
+  userId        String
+  tripId        String?
+  hotelId       String?
+  visaId        String?
+  status        String   @default("pending") // pending | confirmed | cancelled | completed
+  startDate     DateTime
+  endDate       DateTime
+  adults        Int      @default(1)
+  children      Int      @default(0)
+  infants       Int      @default(0)
+  totalAmount   Float
+  currency      String   @default("USD")
+  paymentStatus String   @default("unpaid") // unpaid | paid | refunded
+  paymentMethod String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trip   Trip?   @relation(fields: [tripId], references: [id], onDelete: Set Null)
+  hotel  Hotel?  @relation(fields: [hotelId], references: [id], onDelete: Set Null)
+  visa   Visa?   @relation(fields: [visaId], references: [id], onDelete: Set Null)
+
+  invoices     Invoice[]
+  notifications Notification[]
+}
+
+model Invoice {
+  id          String   @id @default(cuid())
+  bookingId    String
+  userId      String
+  number      String   @unique
+  amount      Float
+  currency    String   @default("USD")
+  issuedAt    DateTime @default(now())
+  pdfUrl      String?
+  booking     Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  tripId    String?
+  hotelId   String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  bookingId String?
+  title     String
+  body      String
+  type      String   @default("info")
+  readAt    DateTime?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  booking   Booking? @relation(fields: [bookingId], references: [id], onDelete: Set Null)
+}
+
+// ===== Content =====
+
+model Blog {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String
+  content     String
+  coverUrl    String
+  authorName  String
+  authorAvatar String?
+  category    String
+  tags        String   // JSON array
+  readMins    Int      @default(5)
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
