@@ -41,7 +41,7 @@ const COUNTRIES = [
 ];
 
 /**
- * Premium register form — "Create your BlueSky Account" with 8 fields
+ * Premium register form — "Create your Boundless Account" with 8 fields
  * (First/Last Name, Email, Phone, Country, Password, Confirm Password),
  * password strength meter, terms checkbox, loading spinner, and social auth.
  */
@@ -75,7 +75,7 @@ export function RegisterForm({ onSubmit, onSwitchToLogin }: RegisterFormProps) {
         className="mb-7"
       >
         <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-          Create your BlueSky Account
+          Create your Boundless Account
         </h1>
         <p className="mt-1.5 text-sm text-muted-foreground">Start exploring the world.</p>
       </motion.div>
@@ -179,7 +179,7 @@ export function RegisterForm({ onSubmit, onSwitchToLogin }: RegisterFormProps) {
             {...form.register("terms")}
           />
           <span>
-            I agree to BlueSky&rsquo;s{" "}
+            I agree to Boundless&rsquo;s{" "}
             <a href="#" className="font-semibold text-primary hover:underline">Terms of Service</a> and{" "}
             <a href="#" className="font-semibold text-primary hover:underline">Privacy Policy</a>.
           </span>

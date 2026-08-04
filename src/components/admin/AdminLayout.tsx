@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
   Menu, ChevronLeft, ChevronRight, LogOut, Bell, Search,
   Shield, User, Globe, Home, ChevronDown, Plus, Zap, Clock,
@@ -49,7 +50,7 @@ const QUICK_ADD_ITEMS = [
  *   - System status indicator (live, all systems operational)
  *   - Live clock (updates every second)
  *   - Notifications bell with dropdown preview
- *   - View Website button (Globe, BlueSky gradient)
+ *   - View Website button (Globe, Boundless gradient)
  *   - User avatar dropdown
  * - Collapsible left sidebar with grouped navigation (50+ items)
  * - "Back to Website" button in sidebar above Logout
@@ -219,7 +220,7 @@ export function AdminLayout({ children, activeModule }: AdminLayoutProps) {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* View Website — Globe, BlueSky gradient, always visible */}
+          {/* View Website — Globe, Boundless gradient, always visible */}
           <button
             onClick={goToWebsite}
             className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-2 text-xs font-semibold text-slate-300 transition-colors hover:border-transparent hover:bg-gradient-bluesky hover:text-white"
@@ -419,12 +420,10 @@ function AdminSidebar({
     <div className="flex h-full flex-col">
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-5 py-4">
-        <div className="grid size-9 shrink-0 place-items-center rounded-xl bg-gradient-bluesky shadow-glow-bluesky">
-          <Shield className="size-5 text-white" />
-        </div>
+        <Image src="/logo-boundless.jpeg" alt="Boundless" width={32} height={32} className="shrink-0 rounded-lg" />
         {!collapsed && (
           <div className="leading-none">
-            <p className="text-sm font-bold text-white">BlueSky Admin</p>
+            <p className="text-sm font-bold text-white">Boundless Admin</p>
             <p className="text-[0.6rem] uppercase tracking-wider text-slate-400">Control Panel</p>
           </div>
         )}

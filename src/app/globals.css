@@ -48,7 +48,7 @@
 :root {
   --radius: 0.875rem;
 
-  /* BlueSky Travel palette (oklch) */
+  /* Boundless Travel palette (oklch) */
   /* #F6FAFF - very pale blue background */
   --background: oklch(0.981 0.006 240);
   --foreground: oklch(0.18 0.02 250);

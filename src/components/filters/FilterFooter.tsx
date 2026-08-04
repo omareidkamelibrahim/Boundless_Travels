@@ -19,7 +19,7 @@ interface FilterFooterProps {
  * Sticky footer of the filter dialog — two CTAs (Booking.com style).
  *
  * - "Reset" on the left: outline button, only enabled when filters are active.
- * - "Apply Filters (N)" on the right: primary BlueSky gradient button showing
+ * - "Apply Filters (N)" on the right: primary Boundless gradient button showing
  *   the total count of individually selected items.
  * - Soft upward shadow + backdrop blur to visually anchor the dialog bottom.
  */

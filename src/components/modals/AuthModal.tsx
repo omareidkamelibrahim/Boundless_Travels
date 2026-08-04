@@ -36,7 +36,7 @@ const forgotSchema = z.object({ email: z.string().email("Enter a valid email") }
 type ForgotValues = z.infer<typeof forgotSchema>;
 
 const QUOTES = [
-  "BlueSky made our honeymoon unforgettable — every detail was perfect.",
+  "Boundless made our honeymoon unforgettable — every detail was perfect.",
   "From the Pyramids to the Maldives, the best trips of my life.",
   "The booking experience was so smooth. Five stars, every time.",
 ];
@@ -54,7 +54,7 @@ export function AuthModal() {
 
   const handleLogin = (values: { email: string; password: string }) => {
     login({ id: "u_demo", email: values.email, name: values.email.split("@")[0] });
-    toast.success("Welcome back to BlueSky!");
+    toast.success("Welcome back to Boundless!");
     closeAuth();
   };
   const handleRegister = (values: {
@@ -99,9 +99,9 @@ export function AuthModal() {
             "max-h-[92vh]",
           )}
         >
-          <DialogTitle className="sr-only">BlueSky Travel Authentication</DialogTitle>
+          <DialogTitle className="sr-only">Boundless Travel Authentication</DialogTitle>
           <DialogDescription className="sr-only">
-            Sign in or create your BlueSky Travel account to continue.
+            Sign in or create your Boundless Travel account to continue.
           </DialogDescription>
 
           {/* Close button */}

@@ -47,7 +47,7 @@ export function WhyChooseUs() {
           <div className="lg:col-span-5">
             <Reveal>
               <SectionTitle
-                eyebrow="Why BlueSky"
+                eyebrow="Why Boundless"
                 title={
                   <>
                     We make every journey

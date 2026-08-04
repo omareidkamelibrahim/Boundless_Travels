@@ -114,7 +114,7 @@ export function SplitAuthLayout({ children, caption, className }: SplitAuthLayou
             <Plane className="size-5 -rotate-45" />
           </div>
           <div className="leading-none">
-            <p className="text-base font-extrabold tracking-tight">BlueSky</p>
+            <p className="text-base font-extrabold tracking-tight">BOUNDLESS</p>
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-white/80">Travel</p>
           </div>
         </div>
@@ -170,7 +170,7 @@ export function SplitAuthLayout({ children, caption, className }: SplitAuthLayou
             <Plane className="size-5 -rotate-45 text-white" />
           </div>
           <div className="leading-none">
-            <p className="text-base font-extrabold tracking-tight text-foreground">BlueSky</p>
+            <p className="text-base font-extrabold tracking-tight text-foreground">BOUNDLESS</p>
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary">Travel</p>
           </div>
         </div>

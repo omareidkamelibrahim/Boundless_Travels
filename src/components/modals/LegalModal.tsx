@@ -38,12 +38,12 @@ const PRIVACY_SECTIONS = [
 ];
 
 const TERMS_SECTIONS = [
-  { title: "Acceptance of Terms", body: "By accessing and using BlueSky Travel's website and services, you agree to be bound by these Terms & Conditions. If you do not agree with any part of these terms, please do not use our services." },
+  { title: "Acceptance of Terms", body: "By accessing and using Boundless Travel's website and services, you agree to be bound by these Terms & Conditions. If you do not agree with any part of these terms, please do not use our services." },
   { title: "Booking & Payment", body: "A 25% deposit secures your booking. The balance is due 14 days before departure. Failure to pay the balance by the due date may result in cancellation of your booking with charges as per our Refund Policy. All prices are in USD unless otherwise stated." },
   { title: "Cancellation by You", body: "Free cancellation up to 7 days before departure (100% refund). 50% refund between 3-7 days before departure. No refund within 72 hours of departure. Cancellation requests must be submitted in writing to bookings@bluesky.travel." },
-  { title: "Cancellation by Us", body: "BlueSky Travel reserves the right to cancel a trip due to unforeseen circumstances (natural disasters, political instability, insufficient participation). In such cases, a full refund or alternative trip will be offered. We are not liable for ancillary costs such as flights or visas." },
+  { title: "Cancellation by Us", body: "Boundless Travel reserves the right to cancel a trip due to unforeseen circumstances (natural disasters, political instability, insufficient participation). In such cases, a full refund or alternative trip will be offered. We are not liable for ancillary costs such as flights or visas." },
   { title: "Travel Documents", body: "It is your responsibility to ensure you have valid passports (6+ months validity), required visas, and travel insurance. We are not liable for denied boarding or entry due to incomplete documentation." },
-  { title: "Liability", body: "BlueSky Travel acts as an agent for suppliers (hotels, airlines, tour operators). We are not liable for acts of God, accidents, injuries, delays, or losses caused by third-party suppliers. Our liability is limited to the amount paid for the booking." },
+  { title: "Liability", body: "Boundless Travel acts as an agent for suppliers (hotels, airlines, tour operators). We are not liable for acts of God, accidents, injuries, delays, or losses caused by third-party suppliers. Our liability is limited to the amount paid for the booking." },
 ];
 
 const REFUND_SECTIONS = [

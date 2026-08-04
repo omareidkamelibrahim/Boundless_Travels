@@ -15,7 +15,7 @@ const VALUES = [
 ];
 
 const TIMELINE = [
-  { year: "2014", title: "BlueSky Founded", desc: "Started with 3 people and a dream to redefine travel." },
+  { year: "2014", title: "Boundless Founded", desc: "Started with 3 people and a dream to redefine travel." },
   { year: "2017", title: "10,000 Travelers", desc: "Reached our first major milestone of happy customers." },
   { year: "2020", title: "Digital Transformation", desc: "Launched our online booking platform with real-time pricing." },
   { year: "2023", title: "Global Expansion", desc: "Expanded to 150+ destinations across 6 continents." },
@@ -33,7 +33,7 @@ export function AboutCompany() {
               <div className="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-premium-lg">
                 <Image
                   src="https://picsum.photos/seed/bluesky-about/800/600"
-                  alt="BlueSky Travel team"
+                  alt="Boundless team"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
@@ -56,13 +56,13 @@ export function AboutCompany() {
           <Reveal delay={0.1}>
             <div>
               <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
-                <span className="size-1.5 rounded-full bg-primary" /> About BlueSky Travel
+                <span className="size-1.5 rounded-full bg-primary" /> About Boundless Travel
               </span>
               <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-[2.75rem] lg:leading-[1.1]">
                 Crafting unforgettable journeys since <span className="text-gradient-bluesky">2014</span>
               </h2>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                BlueSky Travel was born from a simple belief: that travel should be effortless, inspiring, and deeply personal. What started as a small agency in Cairo has grown into a global travel platform serving 50,000+ travelers across 150+ destinations.
+                Boundless Travel was born from a simple belief: that travel should be effortless, inspiring, and deeply personal. What started as a small agency in Cairo has grown into a global travel platform serving 50,000+ travelers across 150+ destinations.
               </p>
               <p className="mt-3 text-base leading-relaxed text-muted-foreground">
                 We combine cutting-edge technology with human expertise to deliver curated experiences that go beyond the ordinary — from luxury overwater villas in the Maldives to sunrise balloon rides over Cappadocia.

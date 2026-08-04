@@ -25,6 +25,6 @@ export const useAuth = create<AuthState>()(
       login: (user) => set({ user, isAuthenticated: true }),
       logout: () => set({ user: null, isAuthenticated: false }),
     }),
-    { name: "bluesky-auth" },
+    { name: "boundless-auth" },
   ),
 );

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
   Plane,
   Heart,
@@ -121,17 +122,20 @@ export function Navbar() {
           )}
         >
           {/* Logo */}
-          <Link href="#home" onClick={(e) => handleNavClick(e, "#home")} className="flex items-center gap-2">
-            <div className="relative grid size-9 place-items-center rounded-xl bg-gradient-bluesky shadow-glow-bluesky">
-              <Plane className="size-5 -rotate-45 text-white" />
-              <span className="absolute -right-0.5 -top-0.5 size-2.5 rounded-full bg-accent ring-2 ring-white" />
-            </div>
+          <Link href="/" onClick={(e) => { e.preventDefault(); router.push("/"); }} className="flex items-center gap-2">
+            <Image
+              src="/logo-boundless.jpeg"
+              alt="Boundless — Your Travel Guide"
+              width={40}
+              height={40}
+              className="rounded-lg"
+            />
             <div className="flex flex-col leading-none">
               <span className="text-base font-extrabold tracking-tight text-foreground">
-                BlueSky
+                BOUNDLESS
               </span>
-              <span className="text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-primary">
-                Travel
+              <span className="text-[0.55rem] font-semibold uppercase tracking-[0.2em] text-primary">
+                Your Travel Guide
               </span>
             </div>
           </Link>

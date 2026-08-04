@@ -19,7 +19,7 @@ interface FloatingInputProps extends React.InputHTMLAttributes<HTMLInputElement>
  *
  * - Label starts inside the field (overlapping the input) and floats up when
  *   the input is focused or has a value.
- * - Leading icon in BlueSky primary color when focused.
+ * - Leading icon in Boundless primary color when focused.
  * - Password toggle (eye / eye-off) for type=password inputs.
  * - Smooth color + scale transitions on focus / error.
  * - Fully accessible: real <label> wrapping a real <input>, ARIA-invalid on error.

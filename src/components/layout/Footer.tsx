@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Plane, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 import { useUI } from "@/stores/use-ui";
 
 const FOOTER_LINKS: { label: string; href: string }[] = [
@@ -33,10 +34,14 @@ export function Footer() {
           {/* Brand + contact */}
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2">
-              <div className="grid size-9 place-items-center rounded-xl bg-gradient-bluesky">
-                <Plane className="size-5 -rotate-45 text-white" />
-              </div>
-              <span className="text-lg font-bold text-white">BlueSky Travel</span>
+              <Image
+                src="/logo-boundless.jpeg"
+                alt="Boundless — Your Travel Guide"
+                width={36}
+                height={36}
+                className="rounded-lg"
+              />
+              <span className="text-lg font-bold text-white">BOUNDLESS</span>
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed">
               Your trusted partner for premium journeys across Egypt and the world.
@@ -104,7 +109,7 @@ export function Footer() {
       <div className="border-t border-white/5">
         <div className="container mx-auto max-w-[1440px] px-4 py-5 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-between gap-2 text-xs sm:flex-row">
-            <p>© {new Date().getFullYear()} BlueSky Travel. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} Boundless Travel. All rights reserved.</p>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => router.push("/admin")}

@@ -47,6 +47,6 @@ export const useWishlist = create<WishlistState>()(
       clear: () => set({ items: [] }),
       has: (id) => get().items.some((i) => i.id === id),
     }),
-    { name: "bluesky-wishlist" },
+    { name: "boundless-wishlist" },
   ),
 );

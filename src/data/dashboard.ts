@@ -100,7 +100,7 @@ export const demoNotifications: AppNotification[] = [
   { id: "n-2", userId: "u_demo", bookingId: "b-3", title: "Payment due", body: "Complete payment for your Cairo Pyramids trip to confirm your booking.", type: "warning", readAt: undefined, createdAt: iso(1) },
   { id: "n-3", userId: "u_demo", title: "20% off weekend deals", body: "Flash sale on weekend getaways. Use code WEEKEND20 at checkout.", type: "info", readAt: iso(0.5), createdAt: iso(3) },
   { id: "n-4", userId: "u_demo", bookingId: "b-2", title: "Trip completed", body: "Hope you loved Cappadocia! Leave a review and earn 100 reward points.", type: "info", readAt: iso(40), createdAt: iso(42) },
-  { id: "n-5", userId: "u_demo", title: "Welcome to BlueSky!", body: "Thanks for joining. Here's a 15% off code: WELCOME15.", type: "success", readAt: iso(95), createdAt: iso(96) },
+  { id: "n-5", userId: "u_demo", title: "Welcome to Boundless!", body: "Thanks for joining. Here's a 15% off code: WELCOME15.", type: "success", readAt: iso(95), createdAt: iso(96) },
 ];
 
 export const demoPaymentMethods = [

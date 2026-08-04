@@ -93,7 +93,7 @@ export function AdminDashboardModal() {
                   <LayoutDashboard className="size-5 text-white" />
                 </div>
                 <div className="leading-none">
-                  <p className="text-sm font-bold text-white">BlueSky Admin</p>
+                  <p className="text-sm font-bold text-white">Boundless Admin</p>
                   <p className="text-[0.6rem] uppercase tracking-wider text-slate-400">Control Panel</p>
                 </div>
               </div>

@@ -1,4 +1,4 @@
-// BlueSky Travel — domain types
+// Boundless Travel — domain types
 // Mirrors prisma/schema.prisma 1:1 so that dummy services can be swapped for Prisma queries
 // without touching any component or UI code.
 

@@ -16,21 +16,21 @@ const interMono = Inter({
   display: "swap",
 });
 
-const SITE_URL = "https://bluesky.travel";
-const SITE_NAME = "BlueSky Travel";
+const SITE_URL = "https://boundless.travel";
+const SITE_NAME = "BOUNDLESS";
 const SITE_DESCRIPTION =
-  "Discover the world with BlueSky Travel — premium trips, luxury hotels, flights and visa services for Egypt and the world.";
-const OG_IMAGE = "https://picsum.photos/seed/bluesky-travel-og/1200/630";
+  "Discover the world with BOUNDLESS — your travel guide for premium trips, luxury hotels, flights and visa services.";
+const OG_IMAGE = "https://picsum.photos/seed/boundless-og/1200/630";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "BlueSky Travel — Premium Trips, Hotels, Flights & Visa Services",
-    template: "%s · BlueSky Travel",
+    default: "BOUNDLESS — Your Travel Guide | Premium Trips, Hotels, Flights & Visa Services",
+    template: "%s · BOUNDLESS",
   },
   description: SITE_DESCRIPTION,
   keywords: [
-    "BlueSky Travel",
+    "BOUNDLESS",
     "Egypt tours",
     "Egypt trips",
     "Maldives honeymoon",
@@ -43,10 +43,10 @@ export const metadata: Metadata = {
     "Red Sea diving",
     "Maasai Mara safari",
   ],
-  authors: [{ name: "BlueSky Travel Team" }],
-  creator: "BlueSky Travel",
-  publisher: "BlueSky Travel",
-  applicationName: "BlueSky Travel",
+  authors: [{ name: "Boundless Team" }],
+  creator: "BOUNDLESS",
+  publisher: "BOUNDLESS",
+  applicationName: "BOUNDLESS",
   category: "Travel & Tourism",
   alternates: {
     canonical: SITE_URL,
@@ -61,20 +61,20 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: "BlueSky Travel — Premium Trips, Hotels & Flights",
+    title: "BOUNDLESS — Your Travel Guide",
     description: SITE_DESCRIPTION,
     images: [
       {
         url: OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: "BlueSky Travel — Discover the world",
+        alt: "BOUNDLESS — Discover the world",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "BlueSky Travel — Premium Trips, Hotels & Flights",
+    title: "BOUNDLESS — Your Travel Guide",
     description: SITE_DESCRIPTION,
     images: [OG_IMAGE],
     creator: "@blueskytravel",
@@ -109,7 +109,7 @@ export const viewport: Viewport = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "TravelAgency",
-  name: "BlueSky Travel",
+  name: "BOUNDLESS",
   description: SITE_DESCRIPTION,
   url: SITE_URL,
   logo: `${SITE_URL}/logo.svg`,

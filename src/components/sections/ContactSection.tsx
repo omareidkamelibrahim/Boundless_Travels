@@ -132,7 +132,7 @@ export function ContactSection() {
               <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-card shadow-premium">
                 <div className="relative aspect-[4/3] bg-gradient-to-br from-primary/10 to-accent/10">
                   <iframe
-                    title="BlueSky Travel HQ"
+                    title="Boundless Travel HQ"
                     className="absolute inset-0 h-full w-full"
                     src="https://www.openstreetmap.org/export/embed.html?bbox=31.2300%2C30.0400%2C31.2450%2C30.0490&layer=mapnik&marker=30.0444%2C31.2357"
                     loading="lazy"

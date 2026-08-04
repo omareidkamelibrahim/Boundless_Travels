@@ -122,7 +122,7 @@ export function LoginForm({ onSubmit, onForgotPassword, onSwitchToRegister }: Lo
       <SocialAuthButtons className="mt-6" />
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
-        New to BlueSky?{" "}
+        New to Boundless?{" "}
         <button
           type="button"
           onClick={onSwitchToRegister}

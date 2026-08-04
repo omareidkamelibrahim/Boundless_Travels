@@ -113,7 +113,7 @@ export function Hero() {
               Discover the world
               <br />
               <span className="bg-gradient-to-r from-accent via-white to-secondary bg-clip-text text-transparent">
-                with BlueSky Travel
+                with BOUNDLESS
               </span>
             </h1>
 

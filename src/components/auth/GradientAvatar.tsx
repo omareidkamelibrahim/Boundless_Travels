@@ -27,7 +27,7 @@ interface GradientAvatarProps {
  *
  * - If `icon` is provided, renders the icon (used for the guest / "Sign In" CTA).
  * - Else if `imageUrl` is provided, displays the profile image (object-cover, rounded-full).
- * - Otherwise generates a deterministic BlueSky gradient avatar with the user's initials.
+ * - Otherwise generates a deterministic Boundless gradient avatar with the user's initials.
  * - Optional green online indicator dot at the bottom-right.
  * - Optional animated pulse ring to draw attention to the guest CTA.
  * - Hover scales up subtly when `interactive` is true (cursor-pointer + ring).

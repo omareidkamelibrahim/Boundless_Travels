@@ -64,7 +64,7 @@ export const useCart = create<CartState>()(
       count: () =>
         get().items.reduce((sum, i) => sum + i.adults + i.children + i.infants, 0),
     }),
-    { name: "bluesky-cart" },
+    { name: "boundless-cart" },
   ),
 );
 

@@ -16,7 +16,7 @@ interface FilterSearchProps {
  *
  * - Leading magnifier icon (Lucide `Search`) in muted color.
  * - Trailing `X` clear button appears when there's text.
- * - Rounded-lg, soft focus ring in BlueSky primary.
+ * - Rounded-lg, soft focus ring in Boundless primary.
  * - Used by the Destination accordion + Country/City searchable checkbox lists.
  */
 export function FilterSearch({

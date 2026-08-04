@@ -21,7 +21,7 @@ export function InstagramGallery() {
               Follow our <span className="text-gradient-bluesky">journey</span>
             </>
           }
-          description="Daily travel inspiration on Instagram. Tag #BlueSkyTravel to be featured."
+          description="Daily travel inspiration on Instagram. Tag #BoundlessTravel to be featured."
         />
 
         <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">

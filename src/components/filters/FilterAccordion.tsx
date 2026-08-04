@@ -39,7 +39,7 @@ export function FilterAccordion({
   children,
   className,
 }: FilterAccordionProps) {
-  const storageKey = persistKey ? `bluesky-filter-open:${persistKey}` : null;
+  const storageKey = persistKey ? `boundless-filter-open:${persistKey}` : null;
   const [open, setOpen] = useState<boolean>(() => {
     if (typeof window === "undefined") return defaultOpen;
     if (!storageKey) return defaultOpen;

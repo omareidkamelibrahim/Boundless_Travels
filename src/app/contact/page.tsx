@@ -97,7 +97,7 @@ export default function ContactPage() {
               <Reveal delay={0.3} as="div">
                 <div className="mt-4 overflow-hidden rounded-2xl border border-border/60 shadow-premium">
                   <iframe
-                    title="BlueSky Travel HQ"
+                    title="Boundless Travel HQ"
                     className="h-48 w-full"
                     src="https://www.openstreetmap.org/export/embed.html?bbox=31.2300%2C30.0400%2C31.2450%2C30.0490&layer=mapnik&marker=30.0444%2C31.2357"
                     loading="lazy"

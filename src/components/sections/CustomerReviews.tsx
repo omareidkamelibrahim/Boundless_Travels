@@ -27,7 +27,7 @@ export function CustomerReviews() {
               Loved by <span className="text-gradient-bluesky">48,000+</span> travelers
             </>
           }
-          description="Real reviews from verified travelers who explored the world with BlueSky."
+          description="Real reviews from verified travelers who explored the world with Boundless."
         />
 
         {/* Summary banner */}
