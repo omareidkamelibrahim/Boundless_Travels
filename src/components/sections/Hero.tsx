@@ -65,7 +65,7 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative isolate flex min-h-[100svh] flex-col overflow-hidden"
+      className="relative flex min-h-[calc(100svh-5rem)] flex-col"
     >
       {/* Background */}
       <div className="absolute inset-0 -z-10">
@@ -87,7 +87,7 @@ export function Hero() {
         <div className="absolute right-0 top-1/3 size-96 rounded-full bg-primary/25 blur-3xl animate-float-y [animation-delay:1.5s]" />
       </div>
 
-      <div className="container mx-auto flex w-full max-w-[1440px] flex-1 flex-col justify-center px-4 pb-10 pt-28 sm:px-6 sm:pt-32 lg:px-8 lg:pt-36">
+      <div className="container mx-auto flex w-full max-w-[1440px] flex-1 flex-col justify-center px-4 pb-10 pt-6 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
           {/* Left content */}
           <motion.div

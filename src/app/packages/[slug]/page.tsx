@@ -96,7 +96,7 @@ function TripDetailsContent({ slug }: { slug: string }) {
   const total = subtotal + serviceFee;
 
   return (
-    <div className="pt-20">
+    <div>
       {/* Gallery */}
       <div className="container mx-auto max-w-[1440px] px-4 py-6 sm:px-6 lg:px-8">
         <Breadcrumb

@@ -129,7 +129,7 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+        "sticky top-0 z-50 transition-all duration-300",
         scrolled ? "py-1.5" : "py-2.5 sm:py-3",
       )}
     >

@@ -33,7 +33,6 @@ export default function GalleryPage() {
 
   return (
     <AppProviders>
-      <div className="pt-20" />
       <section id="gallery" className="relative py-16 sm:py-20 lg:py-24">
         <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
           <SectionTitle

@@ -70,7 +70,6 @@ export default function ServicesPage() {
 
   return (
     <AppProviders>
-      <div className="pt-20" />
 
       {/* Hero banner */}
       <section className="relative overflow-hidden py-12 sm:py-16">

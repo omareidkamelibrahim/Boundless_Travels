@@ -136,9 +136,8 @@
   }
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 6rem; /* 96px — offsets the fixed navbar for hash navigation */
+    scroll-padding-top: 5rem;
     -webkit-text-size-adjust: 100%;
-    overflow-x: hidden;
   }
   body {
     @apply bg-background text-foreground;
@@ -147,7 +146,6 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
   }
   ::selection {
     background-color: oklch(0.819 0.115 224 / 0.35);

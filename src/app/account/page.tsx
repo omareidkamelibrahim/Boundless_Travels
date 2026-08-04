@@ -85,7 +85,7 @@ function AccountContent() {
   }
 
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen">
       <div className="container mx-auto max-w-[1440px] px-4 py-8 sm:px-6 lg:px-8">
         {/* Breadcrumb + View Website bar */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card px-5 py-3 shadow-premium">

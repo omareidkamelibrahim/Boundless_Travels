@@ -9,7 +9,6 @@ import { ContactCTA } from "@/components/sections/ContactCTA";
 export default function AboutPage() {
   return (
     <AppProviders>
-      <div className="pt-20" />
       <AboutCompany />
       <Statistics />
       <Partners />

@@ -8,7 +8,6 @@ import { ContactCTA } from "@/components/sections/ContactCTA";
 export default function PackagesPage() {
   return (
     <AppProviders>
-      <div className="pt-20" />
       <PopularTourPackages />
       <TripsExplorer
         id="domestic-trips"

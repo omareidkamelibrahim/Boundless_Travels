@@ -45,7 +45,7 @@ export function AppProviders({ children }: AppProvidersProps) {
   }, [setCommandOpen]);
 
   return (
-    <>
+    <div className="flex min-h-screen flex-col">
       <Navbar />
       <main className="flex-1">{children}</main>
       <Footer />
@@ -61,6 +61,6 @@ export function AppProviders({ children }: AppProvidersProps) {
       <WishlistDrawer />
       <CartDrawer />
       <CommandPalette />
-    </>
+    </div>
   );
 }
