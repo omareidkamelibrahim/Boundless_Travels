@@ -52,15 +52,11 @@ import { toast } from "sonner";
 
 const NAV_ITEMS: { label: string; href: string; section?: string; icon: React.ElementType }[] = [
   { label: "Home", href: "#home", section: "home", icon: Home },
-  { label: "Domestic", href: "#domestic", section: "domestic-trips", icon: MapPinned },
-  { label: "International", href: "#international", section: "international-trips", icon: Plane },
-  { label: "Hotels", href: "#hotels", section: "hotels", icon: Hotel },
-  { label: "Flights", href: "#flights", section: "flights", icon: PlaneTakeoff },
-  { label: "Visa", href: "#visa", section: "visa", icon: Stamp },
-  { label: "Offers", href: "#offers", section: "offers", icon: Tag },
-  { label: "Blog", href: "#blog", section: "blog", icon: Newspaper },
-  { label: "About", href: "#about", section: "about", icon: Info },
-  { label: "Contact", href: "#contact", section: "contact", icon: Phone },
+  { label: "About Us", href: "#about", section: "about", icon: Info },
+  { label: "Services", href: "#services", section: "services", icon: PlaneTakeoff },
+  { label: "Tour Packages", href: "#packages", section: "packages", icon: MapPinned },
+  { label: "Gallery", href: "#gallery", section: "gallery", icon: Hotel },
+  { label: "Contact Us", href: "#contact", section: "contact", icon: Phone },
 ];
 
 const LANGUAGES = [
@@ -376,6 +372,24 @@ export function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
+
+            {/* Call Now + Book Now CTAs */}
+            <div className="hidden items-center gap-1.5 md:flex">
+              <a
+                href="tel:+202212345678"
+                className="flex items-center gap-1.5 rounded-xl border border-border/60 bg-white/50 px-2.5 py-1.5 text-xs font-semibold text-foreground backdrop-blur-md transition-colors hover:bg-accent"
+                aria-label="Call Now"
+              >
+                <Phone className="size-3.5 text-primary" />
+                <span className="hidden lg:inline">Call Now</span>
+              </a>
+              <button
+                onClick={() => document.getElementById("packages")?.scrollIntoView({ behavior: "smooth" })}
+                className="rounded-xl bg-gradient-bluesky px-3 py-1.5 text-xs font-bold text-white shadow-glow-bluesky transition-transform hover:scale-105"
+              >
+                Book Now
+              </button>
+            </div>
 
             {/* Mobile menu toggle */}
             <button
