@@ -87,7 +87,7 @@ export function Hero() {
         <div className="absolute right-0 top-1/3 size-96 rounded-full bg-primary/25 blur-3xl animate-float-y [animation-delay:1.5s]" />
       </div>
 
-      <div className="container mx-auto flex w-full max-w-[1440px] flex-1 flex-col justify-center px-4 pb-10 pt-32 sm:px-6 sm:pt-36 lg:px-8 lg:pt-40">
+      <div className="container mx-auto flex w-full max-w-[1440px] flex-1 flex-col justify-center px-4 pb-10 pt-28 sm:px-6 sm:pt-32 lg:px-8 lg:pt-36">
         <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
           {/* Left content */}
           <motion.div
