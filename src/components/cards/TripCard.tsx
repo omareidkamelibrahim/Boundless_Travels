@@ -1,8 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Heart, MapPin, Clock, Star, ArrowRight, Users } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import {
+  Heart,
+  MapPin,
+  Clock,
+  Star,
+  Users,
+  ArrowRight,
+  Eye,
+} from "lucide-react";
 import type { Trip } from "@/types";
 import { cn, formatPrice, formatTripDuration, discountPct } from "@/lib/utils";
 import { StarRating } from "@/components/common/StarRating";
@@ -20,16 +29,18 @@ interface TripCardProps {
 
 export function TripCard({ trip, className, onBook, onView }: TripCardProps) {
   const { toggle, has } = useWishlist();
-  const isWishlisted = has(trip.id);
   const openBooking = useUI((s) => s.openBooking);
   const setTripDetailId = useUI((s) => s.setTripDetailId);
+  const router = useRouter();
+  const isWishlisted = has(trip.id);
 
-  const handleBook = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const navigateToDetails = () => router.push(`/packages/${trip.slug}`);
+  const handleBook = () => {
     if (onBook) onBook(trip);
     else openBooking(trip.id);
   };
-  const handleView = () => {
+  const handleQuickView = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (onView) onView(trip);
     else setTripDetailId(trip.id);
   };
@@ -40,13 +51,16 @@ export function TripCard({ trip, className, onBook, onView }: TripCardProps) {
     <motion.article
       whileHover={{ y: -6 }}
       transition={{ type: "spring", stiffness: 280, damping: 24 }}
-      onClick={handleView}
       className={cn(
-        "group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-premium transition-shadow hover:shadow-premium-lg",
+        "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-premium transition-shadow hover:shadow-premium-lg",
         className,
       )}
     >
-      <div className="relative aspect-[4/3] overflow-hidden">
+      {/* Image — clicking navigates to trip details page */}
+      <div
+        className="relative aspect-[4/3] cursor-pointer overflow-hidden"
+        onClick={navigateToDetails}
+      >
         <Image
           src={trip.imageUrl}
           alt={trip.title}
@@ -67,10 +81,7 @@ export function TripCard({ trip, className, onBook, onView }: TripCardProps) {
 
         <button
           aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-          onClick={(e) => {
-            e.stopPropagation();
-            toggle({ trip });
-          }}
+          onClick={(e) => { e.stopPropagation(); toggle({ trip }); }}
           className={cn(
             "absolute right-3 top-3 grid size-9 place-items-center rounded-full backdrop-blur-md transition-all",
             isWishlisted
@@ -79,6 +90,15 @@ export function TripCard({ trip, className, onBook, onView }: TripCardProps) {
           )}
         >
           <Heart className={cn("size-4", isWishlisted && "fill-current")} />
+        </button>
+
+        {/* Quick View eye icon — opens modal */}
+        <button
+          aria-label="Quick view"
+          onClick={handleQuickView}
+          className="absolute bottom-3 right-3 grid size-9 place-items-center rounded-full bg-white/70 text-foreground backdrop-blur-md transition-all hover:bg-white hover:text-primary"
+        >
+          <Eye className="size-4" />
         </button>
 
         <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-2">
@@ -95,11 +115,13 @@ export function TripCard({ trip, className, onBook, onView }: TripCardProps) {
       </div>
 
       <div className="flex flex-1 flex-col gap-3 p-5">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="line-clamp-2 text-base font-bold leading-snug text-foreground group-hover:text-primary">
-            {trip.title}
-          </h3>
-        </div>
+        {/* Title — clicking navigates to trip details page */}
+        <h3
+          className="line-clamp-2 cursor-pointer text-base font-bold leading-snug text-foreground group-hover:text-primary"
+          onClick={navigateToDetails}
+        >
+          {trip.title}
+        </h3>
         <p className="line-clamp-2 text-sm text-muted-foreground">{trip.summary}</p>
 
         <div className="mt-1 flex items-center gap-2">
@@ -122,6 +144,7 @@ export function TripCard({ trip, className, onBook, onView }: TripCardProps) {
               )}
             </div>
           </div>
+          {/* Book Now — opens booking flow */}
           <button
             onClick={handleBook}
             className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-glow-bluesky transition-transform hover:scale-[1.03] active:scale-95"
