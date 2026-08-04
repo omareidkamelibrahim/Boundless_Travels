@@ -28,6 +28,7 @@ import { formatPrice } from "@/lib/utils";
 export function CartDrawer() {
   const { cartOpen, setCartOpen } = useUI();
   const { items, remove, updateQty, clear, subtotal } = useCart();
+  const openCheckout = useUI((s) => s.openCheckout);
   const openBooking = useUI((s) => s.openBooking);
 
   const total = subtotal();
@@ -162,12 +163,7 @@ export function CartDrawer() {
             <Button
               size="lg"
               className="mt-4 w-full bg-gradient-bluesky shadow-glow-bluesky"
-              onClick={() => {
-                if (items[0]) {
-                  setCartOpen(false);
-                  openBooking(items[0].trip.id);
-                }
-              }}
+              onClick={() => openCheckout()}
             >
               Checkout
               <ArrowRight className="size-4" />

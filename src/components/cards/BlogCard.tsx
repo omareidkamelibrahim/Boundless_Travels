@@ -5,6 +5,7 @@ import { Clock, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import type { Blog } from "@/types";
 import { cn, formatDate, initials } from "@/lib/utils";
+import { useUI } from "@/stores/use-ui";
 
 interface BlogCardProps {
   blog: Blog;
@@ -13,10 +14,11 @@ interface BlogCardProps {
 }
 
 export function BlogCard({ blog, className, onClick }: BlogCardProps) {
+  const setBlogId = useUI((s) => s.setBlogId);
   return (
     <motion.article
       whileHover={{ y: -6 }}
-      onClick={() => onClick?.(blog)}
+      onClick={() => { if (onClick) onClick(blog); else setBlogId(blog.id); }}
       className={cn(
         "group flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-premium transition-shadow hover:shadow-premium-lg",
         className,

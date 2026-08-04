@@ -18,7 +18,7 @@ export function OfferCard({ offer, className, onApply }: OfferCardProps) {
     <motion.article
       whileHover={{ y: -4 }}
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-premium",
+        "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-premium",
         className,
       )}
     >

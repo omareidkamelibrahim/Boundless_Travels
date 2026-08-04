@@ -9,7 +9,7 @@ export function TravelCategories() {
   const categories = getCategories();
   return (
     <section id="categories" className="relative py-16 sm:py-20 lg:py-24">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
         <SectionTitle
           eyebrow="Find your vibe"
           align="center"
@@ -21,9 +21,9 @@ export function TravelCategories() {
           description="Whatever your travel style, we have a perfect trip waiting for you."
         />
 
-        <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
+        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
           {categories.map((c, i) => (
-            <Reveal key={c.id} delay={(i % 4) * 0.05} as="div">
+            <Reveal key={c.id} delay={(i % 4) * 0.05} as="div" className="h-full">
               <CategoryCard category={c} className="h-full" />
             </Reveal>
           ))}

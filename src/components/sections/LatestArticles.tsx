@@ -11,7 +11,7 @@ export function LatestArticles() {
   const blogs = getLatestArticles(3);
   return (
     <section id="blog" className="relative py-16 sm:py-20 lg:py-24">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
         <SectionTitle
           eyebrow="Travel journal"
           title={
@@ -28,9 +28,9 @@ export function LatestArticles() {
           }
         />
 
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {blogs.map((b, i) => (
-            <Reveal key={b.id} delay={i * 0.08} as="div">
+            <Reveal key={b.id} delay={i * 0.08} as="div" className="h-full">
               <BlogCard blog={b} />
             </Reveal>
           ))}

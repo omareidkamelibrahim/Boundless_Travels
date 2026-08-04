@@ -15,7 +15,7 @@ import {
   PlaneTakeoff,
   PlaneLanding,
 } from "lucide-react";
-import { cn, formatDuration, formatPrice, formatDate } from "@/lib/utils";
+import { cn, formatDuration, formatPrice, formatDate, formatTimeUtc } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SectionTitle } from "@/components/common/SectionTitle";
@@ -77,7 +77,7 @@ export function FlightsSection() {
         <div className="absolute right-1/4 bottom-1/3 size-80 rounded-full bg-accent/10 blur-3xl" />
       </div>
 
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
         <SectionTitle
           eyebrow="Fly anywhere"
           align="center"
@@ -261,14 +261,14 @@ export function FlightsSection() {
                       </div>
                     </div>
                     <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
-                      <span className="font-bold text-foreground">{format(flight.departureAt, "HH:mm")}</span>
+                      <span className="font-bold text-foreground">{formatTimeUtc(flight.departureAt)}</span>
                       <span>{flight.originCity}</span>
                       <div className="flex-1 border-t border-dashed border-border" />
                       <Clock className="size-3" />
                       <span>{formatDuration(flight.durationMins)}</span>
                       <div className="flex-1 border-t border-dashed border-border" />
                       <span>{flight.destinationCity}</span>
-                      <span className="font-bold text-foreground">{format(flight.arrivalAt, "HH:mm")}</span>
+                      <span className="font-bold text-foreground">{formatTimeUtc(flight.arrivalAt)}</span>
                     </div>
                     <div className="mt-2 flex items-center gap-2">
                       {flight.stops === 0 ? (

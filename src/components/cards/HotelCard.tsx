@@ -8,6 +8,7 @@ import { cn, formatPrice, starCount } from "@/lib/utils";
 import { StarRating } from "@/components/common/StarRating";
 import { cityName } from "@/data";
 import { useWishlist } from "@/stores/use-wishlist";
+import { useUI } from "@/stores/use-ui";
 import { Heart } from "lucide-react";
 
 interface HotelCardProps {
@@ -18,6 +19,7 @@ interface HotelCardProps {
 
 export function HotelCard({ hotel, className, onView }: HotelCardProps) {
   const { toggle, has } = useWishlist();
+  const setHotelId = useUI((s) => s.setHotelId);
   const isWishlisted = has(hotel.id);
   const { full, empty } = starCount(hotel.stars);
 
@@ -25,9 +27,9 @@ export function HotelCard({ hotel, className, onView }: HotelCardProps) {
     <motion.article
       whileHover={{ y: -6 }}
       transition={{ type: "spring", stiffness: 280, damping: 24 }}
-      onClick={() => onView?.(hotel)}
+      onClick={() => { if (onView) onView(hotel); else setHotelId(hotel.id); }}
       className={cn(
-        "group cursor-pointer overflow-hidden rounded-2xl border border-border/60 bg-card shadow-premium transition-shadow hover:shadow-premium-lg",
+        "group flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-premium transition-shadow hover:shadow-premium-lg",
         className,
       )}
     >

@@ -53,6 +53,20 @@ export function formatDuration(minutes: number): string {
   return `${h}h ${m}m`;
 }
 
+/**
+ * Format an ISO timestamp's time-of-day as "HH:mm" using **UTC**.
+ *
+ * Why UTC: date-fns `format()` uses the local timezone, so the same timestamp
+ * renders as different `HH:mm` on server vs client when their timezones differ.
+ * Formatting in UTC is deterministic and hydration-safe.
+ */
+export function formatTimeUtc(iso: string): string {
+  const d = new Date(iso);
+  const h = d.getUTCHours().toString().padStart(2, "0");
+  const m = d.getUTCMinutes().toString().padStart(2, "0");
+  return `${h}:${m}`;
+}
+
 /** Format a trip duration in days as "N days / N nights". */
 export function formatTripDuration(days: number): string {
   const nights = Math.max(0, days - 1);

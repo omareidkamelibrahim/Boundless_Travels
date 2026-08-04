@@ -21,6 +21,7 @@ import {
   Shield,
   ChevronDown,
   ArrowRight,
+  ShoppingCart,
 } from "lucide-react";
 import {
   Dialog,
@@ -37,9 +38,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Breadcrumb } from "@/components/common/Breadcrumb";
 import { useUI } from "@/stores/use-ui";
 import { useWishlist } from "@/stores/use-wishlist";
 import { useBooking } from "@/stores/use-booking";
+import { useCart } from "@/stores/use-cart";
+import { toast } from "sonner";
 import { getTrip, getTripReviews, findCountry, findCity, findCategory } from "@/services";
 import { cn, formatPrice, formatTripDuration, discountPct, formatDate, initials } from "@/lib/utils";
 import { StarRating } from "@/components/common/StarRating";
@@ -62,8 +66,10 @@ const POLICIES = [
 export function TripDetailModal() {
   const tripDetailId = useUI((s) => s.tripDetailId);
   const setTripDetailId = useUI((s) => s.setTripDetailId);
+  const openReviews = useUI((s) => s.openReviews);
   const { toggle, has } = useWishlist();
   const openBooking = useBooking((s) => s.open);
+  const addToCart = useCart((s) => s.add);
 
   const trip = tripDetailId ? getTrip(tripDetailId) : undefined;
   const reviews = trip ? getTripReviews(trip.id) : [];
@@ -177,6 +183,15 @@ export function TripDetailModal() {
 
             {/* Content */}
             <div className="space-y-6 p-5 pt-0 sm:p-6 sm:pt-0">
+              {/* Breadcrumb */}
+              <Breadcrumb
+                items={[
+                  { label: "Home", href: "#home" },
+                  { label: trip.type === "domestic" ? "Domestic" : "International", href: trip.type === "domestic" ? "#domestic-trips" : "#international-trips" },
+                  { label: country?.name ?? "Country" },
+                  { label: trip.title },
+                ]}
+              />
               {/* Header */}
               <div>
                 <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
@@ -290,8 +305,15 @@ export function TripDetailModal() {
                 </TabsContent>
 
                 <TabsContent value="reviews" className="mt-4 space-y-3">
+                  <button
+                    onClick={() => openReviews(trip.title)}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary/30 bg-primary/5 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/10"
+                  >
+                    <Star className="size-4" />
+                    Write a Review
+                  </button>
                   {reviews.length === 0 ? (
-                    <p className="py-8 text-center text-sm text-muted-foreground">No reviews yet.</p>
+                    <p className="py-8 text-center text-sm text-muted-foreground">No reviews yet. Be the first to review!</p>
                   ) : (
                     reviews.map((r) => (
                       <div key={r.id} className="rounded-2xl border border-border/60 bg-card p-4">
@@ -480,6 +502,27 @@ export function TripDetailModal() {
                 >
                   Book Now
                   <ArrowRight className="size-4" />
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full gap-2"
+                  onClick={() => {
+                    addToCart({
+                      trip: trip,
+                      adults: travelers,
+                      children: 0,
+                      infants: 0,
+                      date: selectedDate || new Date(Date.now() + 7 * 86400000).toISOString(),
+                      unitPrice: trip.price,
+                    });
+                    toast.success("Added to cart!");
+                    setTripDetailId(undefined);
+                  }}
+                >
+                  <ShoppingCart className="size-4" />
+                  Add to Cart
                 </Button>
 
                 <p className="flex items-center justify-center gap-1.5 text-[0.65rem] text-muted-foreground">

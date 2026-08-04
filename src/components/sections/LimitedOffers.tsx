@@ -20,7 +20,7 @@ export function LimitedOffers() {
         <div className="absolute -right-32 top-1/2 size-96 -translate-y-1/2 rounded-full bg-rose-500/15 blur-3xl" />
       </div>
 
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
         <SectionTitle
           eyebrow="Limited time"
           title={
@@ -37,9 +37,9 @@ export function LimitedOffers() {
           }
         />
 
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {offers.map((offer, i) => (
-            <Reveal key={offer.id} delay={i * 0.08} as="div">
+            <Reveal key={offer.id} delay={i * 0.08} as="div" className="h-full">
               <OfferCard offer={offer} onApply={() => offer.tripId && openBooking(offer.tripId)} className="h-full" />
             </Reveal>
           ))}

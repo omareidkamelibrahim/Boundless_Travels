@@ -49,6 +49,7 @@ export default function Home() {
           </>
         }
         description="Handcrafted journeys to the world's most beautiful destinations."
+        showFab={false}
       />
       <FlightsSection />
       <VisaSection />

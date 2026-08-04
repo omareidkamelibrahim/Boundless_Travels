@@ -18,7 +18,7 @@ export function CustomerReviews() {
         <div className="absolute left-1/2 top-1/4 size-96 -translate-x-1/2 rounded-full bg-primary/8 blur-3xl" />
       </div>
 
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
         <SectionTitle
           eyebrow="Traveler stories"
           align="center"
@@ -58,9 +58,9 @@ export function CustomerReviews() {
           </div>
         </Reveal>
 
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {reviews.map((r, i) => (
-            <Reveal key={r.id} delay={(i % 3) * 0.08} as="div">
+            <Reveal key={r.id} delay={(i % 3) * 0.08} as="div" className="h-full">
               <ReviewCard review={r} className="h-full" />
             </Reveal>
           ))}

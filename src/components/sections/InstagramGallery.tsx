@@ -12,7 +12,7 @@ export function InstagramGallery() {
   const posts = getInstagramPosts();
   return (
     <section id="instagram" className="relative py-16 sm:py-20 lg:py-24">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
         <SectionTitle
           eyebrow="@bluesky.travel"
           align="center"
@@ -26,7 +26,7 @@ export function InstagramGallery() {
 
         <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
           {posts.map((post, i) => (
-            <Reveal key={post.id} delay={(i % 6) * 0.04} as="div">
+            <Reveal key={post.id} delay={(i % 6) * 0.04} as="div" className="h-full">
               <motion.a
                 href="#"
                 whileHover={{ y: -4 }}

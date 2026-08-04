@@ -37,7 +37,7 @@ export function FeaturedTrips({ id = "featured-trips" }: { id?: string }) {
         <div className="absolute inset-x-0 top-1/3 mx-auto h-96 max-w-5xl rounded-full bg-accent/10 blur-3xl" />
       </div>
 
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
         <SectionTitle
           eyebrow="Curated picks"
           title={
@@ -72,7 +72,7 @@ export function FeaturedTrips({ id = "featured-trips" }: { id?: string }) {
           }
         />
 
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <AnimatePresence mode="popLayout">
             {trips.map((trip, i) => (
               <motion.div

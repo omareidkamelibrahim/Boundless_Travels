@@ -11,7 +11,7 @@ export function BestHotels() {
   const hotels = getBestHotels(4);
   return (
     <section id="hotels" className="relative py-16 sm:py-20 lg:py-24">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
         <SectionTitle
           eyebrow="Stay in style"
           title={
@@ -28,9 +28,9 @@ export function BestHotels() {
           }
         />
 
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {hotels.map((h, i) => (
-            <Reveal key={h.id} delay={i * 0.05} as="div">
+            <Reveal key={h.id} delay={i * 0.05} as="div" className="h-full">
               <HotelCard hotel={h} />
             </Reveal>
           ))}

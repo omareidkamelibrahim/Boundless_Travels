@@ -6,8 +6,29 @@ export const img = (seed: string, w = 1200, h = 800) =>
   `https://picsum.photos/seed/${encodeURIComponent(seed)}/${w}/${h}`;
 
 // Stable ISO timestamps for createdAt fields
-const iso = (daysAgo: number) => new Date(Date.now() - daysAgo * 86_400_000).toISOString();
-const futureIso = (daysAhead: number) => new Date(Date.now() + daysAhead * 86_400_000).toISOString();
+export const iso = (daysAgo: number) => new Date(Date.now() - daysAgo * 86_400_000).toISOString();
+export const futureIso = (daysAhead: number) => new Date(Date.now() + daysAhead * 86_400_000).toISOString();
+
+/**
+ * Deterministic flight timestamp: N days from today at a FIXED UTC hour/minute.
+ *
+ * Why: `futureIso(N)` keeps the current time-of-day, which differs between SSR
+ * and client hydration (a few hundred ms apart). Using a fixed UTC hour makes
+ * the formatted `HH:mm` identical on server and client regardless of timezone.
+ */
+export const flightDate = (daysAhead: number, hourUtc: number, minuteUtc: number = 0) => {
+  const now = new Date();
+  return new Date(
+    Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate() + daysAhead,
+      hourUtc,
+      minuteUtc,
+      0,
+    ),
+  ).toISOString();
+};
 
 // ===== Countries =====
 export const countries: Country[] = [
@@ -874,14 +895,14 @@ export const hotels: Hotel[] = [
 
 // ===== Flights =====
 export const flights: Flight[] = [
-  { id: "f-1", airline: "EgyptAir", flightNumber: "MS-841", originCity: "Cairo", destinationCity: "Dubai", departureAt: futureIso(3), arrivalAt: futureIso(3), durationMins: 200, cabinClass: "economy", stops: 0, price: 280, currency: "USD", seatsLeft: 12, baggage: "30kg checked", createdAt: iso(20) },
-  { id: "f-2", airline: "Emirates", flightNumber: "EK-726", originCity: "Cairo", destinationCity: "Dubai", departureAt: futureIso(3), arrivalAt: futureIso(3), durationMins: 195, cabinClass: "business", stops: 0, price: 980, currency: "USD", seatsLeft: 4, baggage: "40kg checked", createdAt: iso(20) },
-  { id: "f-3", airline: "Turkish Airlines", flightNumber: "TK-695", originCity: "Cairo", destinationCity: "Istanbul", departureAt: futureIso(5), arrivalAt: futureIso(5), durationMins: 145, cabinClass: "economy", stops: 0, price: 220, currency: "USD", seatsLeft: 28, baggage: "30kg checked", createdAt: iso(18) },
-  { id: "f-4", airline: "Lufthansa", flightNumber: "LH-581", originCity: "Cairo", destinationCity: "Paris", departureAt: futureIso(7), arrivalAt: futureIso(7), durationMins: 305, cabinClass: "economy", stops: 1, price: 340, currency: "USD", seatsLeft: 18, baggage: "23kg checked", createdAt: iso(15) },
-  { id: "f-5", airline: "Qatar Airways", flightNumber: "QR-1302", originCity: "Cairo", destinationCity: "Malé", departureAt: futureIso(10), arrivalAt: futureIso(10), durationMins: 480, cabinClass: "economy", stops: 1, price: 540, currency: "USD", seatsLeft: 9, baggage: "30kg checked", createdAt: iso(12) },
-  { id: "f-6", airline: "Etihad", flightNumber: "EY-712", originCity: "Cairo", destinationCity: "Tokyo", departureAt: futureIso(12), arrivalAt: futureIso(12), durationMins: 720, cabinClass: "economy", stops: 1, price: 980, currency: "USD", seatsLeft: 6, baggage: "30kg checked", createdAt: iso(10) },
-  { id: "f-7", airline: "Singapore Airlines", flightNumber: "SQ-491", originCity: "Dubai", destinationCity: "Tokyo", departureAt: futureIso(15), arrivalAt: futureIso(15), durationMins: 540, cabinClass: "business", stops: 1, price: 2450, currency: "USD", seatsLeft: 3, baggage: "40kg checked", createdAt: iso(8) },
-  { id: "f-8", airline: "Aegean", flightNumber: "A3-921", originCity: "Cairo", destinationCity: "Athens", departureAt: futureIso(8), arrivalAt: futureIso(8), durationMins: 130, cabinClass: "economy", stops: 0, price: 195, currency: "USD", seatsLeft: 22, baggage: "23kg checked", createdAt: iso(5) },
+  { id: "f-1", airline: "EgyptAir", flightNumber: "MS-841", originCity: "Cairo", destinationCity: "Dubai", departureAt: flightDate(3, 8, 15), arrivalAt: flightDate(3, 11, 35), durationMins: 200, cabinClass: "economy", stops: 0, price: 280, currency: "USD", seatsLeft: 12, baggage: "30kg checked", createdAt: iso(20) },
+  { id: "f-2", airline: "Emirates", flightNumber: "EK-726", originCity: "Cairo", destinationCity: "Dubai", departureAt: flightDate(3, 14, 0), arrivalAt: flightDate(3, 17, 15), durationMins: 195, cabinClass: "business", stops: 0, price: 980, currency: "USD", seatsLeft: 4, baggage: "40kg checked", createdAt: iso(20) },
+  { id: "f-3", airline: "Turkish Airlines", flightNumber: "TK-695", originCity: "Cairo", destinationCity: "Istanbul", departureAt: flightDate(5, 9, 30), arrivalAt: flightDate(5, 11, 55), durationMins: 145, cabinClass: "economy", stops: 0, price: 220, currency: "USD", seatsLeft: 28, baggage: "30kg checked", createdAt: iso(18) },
+  { id: "f-4", airline: "Lufthansa", flightNumber: "LH-581", originCity: "Cairo", destinationCity: "Paris", departureAt: flightDate(7, 6, 45), arrivalAt: flightDate(7, 11, 50), durationMins: 305, cabinClass: "economy", stops: 1, price: 340, currency: "USD", seatsLeft: 18, baggage: "23kg checked", createdAt: iso(15) },
+  { id: "f-5", airline: "Qatar Airways", flightNumber: "QR-1302", originCity: "Cairo", destinationCity: "Malé", departureAt: flightDate(10, 22, 0), arrivalAt: flightDate(11, 6, 0), durationMins: 480, cabinClass: "economy", stops: 1, price: 540, currency: "USD", seatsLeft: 9, baggage: "30kg checked", createdAt: iso(12) },
+  { id: "f-6", airline: "Etihad", flightNumber: "EY-712", originCity: "Cairo", destinationCity: "Tokyo", departureAt: flightDate(12, 1, 30), arrivalAt: flightDate(12, 13, 30), durationMins: 720, cabinClass: "economy", stops: 1, price: 980, currency: "USD", seatsLeft: 6, baggage: "30kg checked", createdAt: iso(10) },
+  { id: "f-7", airline: "Singapore Airlines", flightNumber: "SQ-491", originCity: "Dubai", destinationCity: "Tokyo", departureAt: flightDate(15, 3, 0), arrivalAt: flightDate(15, 12, 0), durationMins: 540, cabinClass: "business", stops: 1, price: 2450, currency: "USD", seatsLeft: 3, baggage: "40kg checked", createdAt: iso(8) },
+  { id: "f-8", airline: "Aegean", flightNumber: "A3-921", originCity: "Cairo", destinationCity: "Athens", departureAt: flightDate(8, 10, 15), arrivalAt: flightDate(8, 12, 25), durationMins: 130, cabinClass: "economy", stops: 0, price: 195, currency: "USD", seatsLeft: 22, baggage: "23kg checked", createdAt: iso(5) },
 ];
 
 // ===== Visas =====

@@ -163,6 +163,13 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        {/* Fixed navbar offset — ensures section titles aren't hidden behind the
+            ~80px tall fixed header when navigating via navbar links or hash URLs.
+            Must be in <head> (not globals.css) because Tailwind v4 strips plain
+            CSS rules from @layer base. */}
+        <style dangerouslySetInnerHTML={{
+          __html: `section[id] { scroll-margin-top: 5rem; }`,
+        }} />
       </head>
       <body
         className={`${inter.variable} ${interMono.variable} antialiased bg-background text-foreground`}

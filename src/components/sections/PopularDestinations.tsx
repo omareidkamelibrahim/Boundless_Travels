@@ -15,7 +15,7 @@ export function PopularDestinations() {
 
   return (
     <section id="destinations" className="relative py-16 sm:py-20 lg:py-24">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
         <SectionTitle
           eyebrow="Trending now"
           title={
@@ -32,14 +32,14 @@ export function PopularDestinations() {
           }
         />
 
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {/* Tall hero card */}
           <Reveal as="div" className="lg:row-span-2">
             <DestinationCard destination={destinations[0]} size="lg" className="h-full" />
           </Reveal>
 
           {destinations.slice(1, 5).map((d, i) => (
-            <Reveal key={d.id} delay={i * 0.05} as="div">
+            <Reveal key={d.id} delay={i * 0.05} as="div" className="h-full">
               <DestinationCard destination={d} />
             </Reveal>
           ))}

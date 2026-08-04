@@ -42,7 +42,7 @@ export function WhyChooseUs() {
   const stats = getPlatformStats();
   return (
     <section id="about" className="relative overflow-hidden py-16 sm:py-20 lg:py-24">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-12 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <Reveal>
@@ -72,7 +72,7 @@ export function WhyChooseUs() {
               {FEATURES.map((f, i) => {
                 const Icon = f.icon;
                 return (
-                  <Reveal key={f.title} delay={i * 0.08} as="div">
+                  <Reveal key={f.title} delay={i * 0.08} as="div" className="h-full">
                     <motion.div
                       whileHover={{ y: -4 }}
                       className="group relative flex h-full flex-col gap-3 overflow-hidden rounded-2xl border border-border/60 bg-card p-6 shadow-premium"

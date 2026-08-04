@@ -42,7 +42,7 @@ export function TripCard({ trip, className, onBook, onView }: TripCardProps) {
       transition={{ type: "spring", stiffness: 280, damping: 24 }}
       onClick={handleView}
       className={cn(
-        "group relative flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-premium transition-shadow hover:shadow-premium-lg",
+        "group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-premium transition-shadow hover:shadow-premium-lg",
         className,
       )}
     >

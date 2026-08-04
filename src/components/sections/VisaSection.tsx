@@ -12,7 +12,7 @@ export function VisaSection() {
 
   return (
     <section id="visa" className="relative py-16 sm:py-20 lg:py-24">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
         <SectionTitle
           eyebrow="Travel documents"
           align="center"
@@ -24,9 +24,9 @@ export function VisaSection() {
           description="Apply for tourist, business, and student visas with our streamlined process."
         />
 
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {visas.map((v, i) => (
-            <Reveal key={v.id} delay={(i % 3) * 0.06} as="div">
+            <Reveal key={v.id} delay={(i % 3) * 0.06} as="div" className="h-full">
               <VisaCard visa={v} onApply={() => openBooking()} className="h-full" />
             </Reveal>
           ))}

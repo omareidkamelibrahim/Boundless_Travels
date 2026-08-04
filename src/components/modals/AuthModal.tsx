@@ -7,79 +7,66 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
   Mail,
-  Lock,
-  User,
-  Phone,
-  Eye,
-  EyeOff,
-  Plane,
   ArrowRight,
   ArrowLeft,
   ShieldCheck,
   KeyRound,
   CheckCircle2,
+  Loader2,
+  Plane,
 } from "lucide-react";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {
   Dialog,
-  DialogContent,
-  DialogHeader,
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { FloatingInput } from "@/components/auth/FloatingInput";
+import { SplitAuthLayout } from "@/components/auth/SplitAuthLayout";
+import { LoginForm } from "@/components/auth/LoginForm";
+import { RegisterForm } from "@/components/auth/RegisterForm";
 import { useUI } from "@/stores/use-ui";
 import { useAuth } from "@/stores/use-auth";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-const loginSchema = z.object({
-  email: z.string().email("Enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
-const registerSchema = z.object({
-  name: z.string().min(2, "Enter your full name"),
-  email: z.string().email("Enter a valid email"),
-  phone: z.string().min(7, "Enter a valid phone number"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirm: z.string(),
-}).refine((d) => d.password === d.confirm, { message: "Passwords don't match", path: ["confirm"] });
 const forgotSchema = z.object({ email: z.string().email("Enter a valid email") });
-
-type LoginValues = z.infer<typeof loginSchema>;
-type RegisterValues = z.infer<typeof registerSchema>;
 type ForgotValues = z.infer<typeof forgotSchema>;
+
+const QUOTES = [
+  "BlueSky made our honeymoon unforgettable — every detail was perfect.",
+  "From the Pyramids to the Maldives, the best trips of my life.",
+  "The booking experience was so smooth. Five stars, every time.",
+];
 
 export function AuthModal() {
   const { authOpen, authView, closeAuth, setAuthView } = useUI();
   const login = useAuth((s) => s.login);
-  const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState("");
 
-  const loginForm = useForm<LoginValues>({ resolver: zodResolver(loginSchema), defaultValues: { email: "", password: "" } });
-  const registerForm = useForm<RegisterValues>({ resolver: zodResolver(registerSchema), defaultValues: { name: "", email: "", phone: "", password: "", confirm: "" } });
-  const forgotForm = useForm<ForgotValues>({ resolver: zodResolver(forgotSchema), defaultValues: { email: "" } });
+  const forgotForm = useForm<ForgotValues>({
+    resolver: zodResolver(forgotSchema),
+    defaultValues: { email: "" },
+  });
 
-  const handleLogin = (values: LoginValues) => {
-    setLoading(true);
-    setTimeout(() => {
-      login({ id: "u_demo", email: values.email, name: values.email.split("@")[0] });
-      toast.success("Welcome back to BlueSky!");
-      setLoading(false);
-      closeAuth();
-    }, 800);
+  const handleLogin = (values: { email: string; password: string }) => {
+    login({ id: "u_demo", email: values.email, name: values.email.split("@")[0] });
+    toast.success("Welcome back to BlueSky!");
+    closeAuth();
   };
-  const handleRegister = (values: RegisterValues) => {
-    setLoading(true);
-    setTimeout(() => {
-      login({ id: "u_demo", email: values.email, name: values.name });
-      toast.success("Account created — welcome aboard!");
-      setLoading(false);
-      closeAuth();
-    }, 800);
+  const handleRegister = (values: {
+    firstName: string; lastName: string; email: string; phone: string; country: string;
+  }) => {
+    login({
+      id: "u_demo",
+      email: values.email,
+      name: `${values.firstName} ${values.lastName}`,
+    });
+    toast.success("Account created — welcome aboard!");
+    closeAuth();
   };
   const handleForgot = (values: ForgotValues) => {
     setLoading(true);
@@ -99,303 +86,226 @@ export function AuthModal() {
     }, 800);
   };
 
+  const quote = QUOTES[Math.floor(Date.now() / 86_400_000) % QUOTES.length];
+
   return (
     <Dialog open={authOpen} onOpenChange={(open) => !open && closeAuth()}>
-      <DialogContent className="max-w-md gap-0 overflow-hidden p-0 sm:rounded-3xl">
-        {/* Decorative top */}
-        <div className="relative h-28 overflow-hidden bg-gradient-bluesky">
-          <div className="pointer-events-none absolute inset-0 opacity-50">
-            <div className="absolute -right-10 -top-10 size-40 rounded-full bg-white/20 blur-2xl" />
-            <div className="absolute -left-10 bottom-0 size-32 rounded-full bg-accent/40 blur-2xl" />
-          </div>
-          <div className="absolute inset-x-0 bottom-0 flex items-center justify-between px-6 pb-3 text-white">
-            <div className="flex items-center gap-2">
-              <div className="grid size-9 place-items-center rounded-xl bg-white/20 backdrop-blur-md">
-                <Plane className="size-5 -rotate-45" />
-              </div>
-              <div className="leading-none">
-                <p className="text-sm font-bold">BlueSky Travel</p>
-                <p className="text-[0.65rem] text-white/80">Your journey starts here</p>
-              </div>
-            </div>
-            <DialogDescription className="sr-only">Authentication</DialogDescription>
-          </div>
-        </div>
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-[4px] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0" />
+        <DialogPrimitive.Content
+          className={cn(
+            "fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl bg-card shadow-2xl",
+            "w-[calc(100vw-1rem)] max-w-[1100px] sm:w-[calc(100vw-2rem)]",
+            "max-h-[92vh]",
+          )}
+        >
+          <DialogTitle className="sr-only">BlueSky Travel Authentication</DialogTitle>
+          <DialogDescription className="sr-only">
+            Sign in or create your BlueSky Travel account to continue.
+          </DialogDescription>
 
-        <div className="p-6 pt-5">
-          <DialogHeader className="mb-1 space-y-1">
-            <DialogTitle className="text-xl">
-              {authView === "login" && "Welcome back"}
-              {authView === "register" && "Create your account"}
-              {authView === "forgot" && "Reset password"}
-              {authView === "otp" && "Verify your email"}
-              {authView === "reset" && "Set new password"}
-            </DialogTitle>
-            <DialogDescription>
-              {authView === "login" && "Sign in to continue your travel journey."}
-              {authView === "register" && "Join 48,000+ travelers exploring the world."}
-              {authView === "forgot" && "Enter your email to receive a reset code."}
-              {authView === "otp" && "We sent a 6-digit code to your email."}
-              {authView === "reset" && "Choose a strong new password."}
-            </DialogDescription>
-          </DialogHeader>
+          {/* Close button */}
+          <DialogPrimitive.Close
+            aria-label="Close"
+            className="absolute right-4 top-4 z-50 grid size-9 place-items-center rounded-full bg-card/80 text-muted-foreground backdrop-blur-md transition-colors hover:bg-accent hover:text-foreground"
+          >
+            <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </DialogPrimitive.Close>
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={authView}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
-            >
-              {authView === "login" && (
-                <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-4 pt-2">
-                  <FormField label="Email" icon={Mail} error={loginForm.formState.errors.email?.message}>
-                    <Input type="email" placeholder="you@email.com" {...loginForm.register("email")} className="pl-10" />
-                  </FormField>
-                  <FormField label="Password" icon={Lock} error={loginForm.formState.errors.password?.message}>
-                    <Input
-                      type={showPwd ? "text" : "password"}
-                      placeholder="••••••••"
-                      {...loginForm.register("password")}
-                      className="pl-10 pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPwd(!showPwd)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          <SplitAuthLayout caption={quote}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={authView}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                className="flex justify-center"
+              >
+                {authView === "login" && (
+                  <LoginForm
+                    onSubmit={handleLogin}
+                    onForgotPassword={() => setAuthView("forgot")}
+                    onSwitchToRegister={() => setAuthView("register")}
+                  />
+                )}
+
+                {authView === "register" && (
+                  <RegisterForm
+                    onSubmit={handleRegister}
+                    onSwitchToLogin={() => setAuthView("login")}
+                  />
+                )}
+
+                {authView === "forgot" && (
+                  <div className="w-full max-w-sm">
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className="mb-7"
                     >
-                      {showPwd ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                    </button>
-                  </FormField>
+                      <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                        Reset password
+                      </h1>
+                      <p className="mt-1.5 text-sm text-muted-foreground">
+                        Enter your email to receive a reset code.
+                      </p>
+                    </motion.div>
 
-                  <div className="flex items-center justify-between">
-                    <label className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <input type="checkbox" className="size-3.5 accent-primary" />
-                      Remember me
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => setAuthView("forgot")}
-                      className="text-xs font-semibold text-primary hover:underline"
-                    >
-                      Forgot password?
-                    </button>
+                    <form onSubmit={forgotForm.handleSubmit(handleForgot)} className="space-y-4">
+                      <FloatingInput
+                        label="Email"
+                        icon={Mail}
+                        type="email"
+                        autoComplete="email"
+                        error={forgotForm.formState.errors.email?.message}
+                        {...forgotForm.register("email")}
+                      />
+                      <Button
+                        type="submit"
+                        disabled={loading}
+                        className="mt-2 h-12 w-full gap-2 rounded-xl bg-gradient-bluesky text-sm font-bold shadow-glow-bluesky"
+                      >
+                        {loading ? (
+                          <>
+                            <Loader2 className="size-4 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            Send Reset Code
+                            <ArrowRight className="size-4" />
+                          </>
+                        )}
+                      </Button>
+                      <button
+                        type="button"
+                        onClick={() => setAuthView("login")}
+                        className="flex w-full items-center justify-center gap-1.5 pt-1 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        <ArrowLeft className="size-3.5" /> Back to login
+                      </button>
+                    </form>
                   </div>
+                )}
 
-                  <Button type="submit" disabled={loading} className="w-full bg-gradient-bluesky shadow-glow-bluesky">
-                    {loading ? "Signing in..." : "Sign In"}
-                    <ArrowRight className="size-4" />
-                  </Button>
-
-                  <SocialAuth />
-
-                  <p className="text-center text-sm text-muted-foreground">
-                    New to BlueSky?{" "}
-                    <button
-                      type="button"
-                      onClick={() => setAuthView("register")}
-                      className="font-semibold text-primary hover:underline"
+                {authView === "otp" && (
+                  <div className="w-full max-w-sm">
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className="mb-7 flex flex-col items-center text-center"
                     >
-                      Create account
-                    </button>
-                  </p>
-                </form>
-              )}
+                      <div className="mb-4 grid size-14 place-items-center rounded-2xl bg-gradient-bluesky-soft text-primary ring-1 ring-primary/20">
+                        <ShieldCheck className="size-7" />
+                      </div>
+                      <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                        Verify your email
+                      </h1>
+                      <p className="mt-1.5 text-sm text-muted-foreground">
+                        We sent a 6-digit code to your email.
+                      </p>
+                    </motion.div>
 
-              {authView === "register" && (
-                <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-3.5 pt-2">
-                  <FormField label="Full Name" icon={User} error={registerForm.formState.errors.name?.message}>
-                    <Input placeholder="John Doe" {...registerForm.register("name")} className="pl-10" />
-                  </FormField>
-                  <FormField label="Email" icon={Mail} error={registerForm.formState.errors.email?.message}>
-                    <Input type="email" placeholder="you@email.com" {...registerForm.register("email")} className="pl-10" />
-                  </FormField>
-                  <FormField label="Phone" icon={Phone} error={registerForm.formState.errors.phone?.message}>
-                    <Input type="tel" placeholder="+1 555 123 4567" {...registerForm.register("phone")} className="pl-10" />
-                  </FormField>
-                  <FormField label="Password" icon={Lock} error={registerForm.formState.errors.password?.message}>
-                    <Input
-                      type={showPwd ? "text" : "password"}
-                      placeholder="••••••••"
-                      {...registerForm.register("password")}
-                      className="pl-10 pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPwd(!showPwd)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    >
-                      {showPwd ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                    </button>
-                  </FormField>
-                  <FormField label="Confirm Password" icon={Lock} error={registerForm.formState.errors.confirm?.message}>
-                    <Input
-                      type="password"
-                      placeholder="••••••••"
-                      {...registerForm.register("confirm")}
-                      className="pl-10"
-                    />
-                  </FormField>
-
-                  <label className="flex items-start gap-2 text-xs text-muted-foreground">
-                    <input type="checkbox" required className="mt-0.5 size-3.5 accent-primary" />
-                    <span>
-                      I agree to BlueSky's{" "}
-                      <a href="#" className="font-semibold text-primary hover:underline">Terms</a> and{" "}
-                      <a href="#" className="font-semibold text-primary hover:underline">Privacy Policy</a>.
-                    </span>
-                  </label>
-
-                  <Button type="submit" disabled={loading} className="w-full bg-gradient-bluesky shadow-glow-bluesky">
-                    {loading ? "Creating..." : "Create Account"}
-                    <ArrowRight className="size-4" />
-                  </Button>
-
-                  <SocialAuth />
-
-                  <p className="text-center text-sm text-muted-foreground">
-                    Already have an account?{" "}
-                    <button
-                      type="button"
-                      onClick={() => setAuthView("login")}
-                      className="font-semibold text-primary hover:underline"
-                    >
-                      Sign in
-                    </button>
-                  </p>
-                </form>
-              )}
-
-              {authView === "forgot" && (
-                <form onSubmit={forgotForm.handleSubmit(handleForgot)} className="space-y-4 pt-2">
-                  <FormField label="Email" icon={Mail} error={forgotForm.formState.errors.email?.message}>
-                    <Input type="email" placeholder="you@email.com" {...forgotForm.register("email")} className="pl-10" />
-                  </FormField>
-                  <Button type="submit" disabled={loading} className="w-full bg-gradient-bluesky shadow-glow-bluesky">
-                    {loading ? "Sending..." : "Send Reset Code"}
-                    <ArrowRight className="size-4" />
-                  </Button>
-                  <button
-                    type="button"
-                    onClick={() => setAuthView("login")}
-                    className="flex w-full items-center justify-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground"
-                  >
-                    <ArrowLeft className="size-3.5" /> Back to login
-                  </button>
-                </form>
-              )}
-
-              {authView === "otp" && (
-                <div className="space-y-5 pt-2">
-                  <div className="flex justify-center">
-                    <div className="grid size-14 place-items-center rounded-2xl bg-gradient-bluesky-soft text-primary ring-1 ring-primary/20">
-                      <ShieldCheck className="size-7" />
+                    <div className="space-y-5">
+                      <div className="flex justify-center">
+                        <InputOTP maxLength={6} value={otp} onChange={setOtp}>
+                          <InputOTPGroup>
+                            <InputOTPSlot index={0} />
+                            <InputOTPSlot index={1} />
+                            <InputOTPSlot index={2} />
+                            <InputOTPSlot index={3} />
+                            <InputOTPSlot index={4} />
+                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                        </InputOTP>
+                      </div>
+                      <Button
+                        onClick={handleVerifyOtp}
+                        disabled={loading || otp.length !== 6}
+                        className="h-12 w-full gap-2 rounded-xl bg-gradient-bluesky text-sm font-bold shadow-glow-bluesky"
+                      >
+                        {loading ? (
+                          <>
+                            <Loader2 className="size-4 animate-spin" />
+                            Verifying...
+                          </>
+                        ) : (
+                          <>
+                            Verify Code
+                            <CheckCircle2 className="size-4" />
+                          </>
+                        )}
+                      </Button>
+                      <p className="text-center text-xs text-muted-foreground">
+                        Didn&rsquo;t receive it?{" "}
+                        <button type="button" className="font-semibold text-primary hover:underline">
+                          Resend in 30s
+                        </button>
+                      </p>
                     </div>
                   </div>
-                  <div className="flex justify-center">
-                    <InputOTP maxLength={6} value={otp} onChange={setOtp}>
-                      <InputOTPGroup>
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                        <InputOTPSlot index={3} />
-                        <InputOTPSlot index={4} />
-                        <InputOTPSlot index={5} />
-                      </InputOTPGroup>
-                    </InputOTP>
+                )}
+
+                {authView === "reset" && (
+                  <div className="w-full max-w-sm">
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className="mb-7"
+                    >
+                      <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                        Set new password
+                      </h1>
+                      <p className="mt-1.5 text-sm text-muted-foreground">
+                        Choose a strong new password.
+                      </p>
+                    </motion.div>
+
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        setLoading(true);
+                        setTimeout(() => {
+                          toast.success("Password reset! You can now sign in.");
+                          setLoading(false);
+                          setAuthView("login");
+                        }, 800);
+                      }}
+                      className="space-y-4"
+                    >
+                      <FloatingInput label="New Password" icon={KeyRound} type="password" required />
+                      <FloatingInput label="Confirm Password" icon={KeyRound} type="password" required />
+                      <Button
+                        type="submit"
+                        disabled={loading}
+                        className="mt-2 h-12 w-full gap-2 rounded-xl bg-gradient-bluesky text-sm font-bold shadow-glow-bluesky"
+                      >
+                        {loading ? (
+                          <>
+                            <Loader2 className="size-4 animate-spin" />
+                            Saving...
+                          </>
+                        ) : (
+                          <>
+                            Save New Password
+                            <CheckCircle2 className="size-4" />
+                          </>
+                        )}
+                      </Button>
+                    </form>
                   </div>
-                  <Button onClick={handleVerifyOtp} disabled={loading || otp.length !== 6} className="w-full bg-gradient-bluesky shadow-glow-bluesky">
-                    {loading ? "Verifying..." : "Verify Code"}
-                    <CheckCircle2 className="size-4" />
-                  </Button>
-                  <p className="text-center text-xs text-muted-foreground">
-                    Didn't receive it?{" "}
-                    <button type="button" className="font-semibold text-primary hover:underline">
-                      Resend in 30s
-                    </button>
-                  </p>
-                </div>
-              )}
-
-              {authView === "reset" && (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    setLoading(true);
-                    setTimeout(() => {
-                      toast.success("Password reset! You can now sign in.");
-                      setLoading(false);
-                      setAuthView("login");
-                    }, 800);
-                  }}
-                  className="space-y-4 pt-2"
-                >
-                  <FormField label="New Password" icon={KeyRound}>
-                    <Input type="password" placeholder="••••••••" required className="pl-10" />
-                  </FormField>
-                  <FormField label="Confirm Password" icon={KeyRound}>
-                    <Input type="password" placeholder="••••••••" required className="pl-10" />
-                  </FormField>
-                  <Button type="submit" disabled={loading} className="w-full bg-gradient-bluesky shadow-glow-bluesky">
-                    {loading ? "Saving..." : "Save New Password"}
-                    <CheckCircle2 className="size-4" />
-                  </Button>
-                </form>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </DialogContent>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </SplitAuthLayout>
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
     </Dialog>
-  );
-}
-
-function FormField({
-  label,
-  icon: Icon,
-  error,
-  children,
-}: {
-  label: string;
-  icon: React.ElementType;
-  error?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-1.5">
-      <Label className="text-xs font-semibold text-foreground">{label}</Label>
-      <div className="relative">
-        <Icon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        {children}
-      </div>
-      {error && <p className="text-xs font-medium text-destructive">{error}</p>}
-    </div>
-  );
-}
-
-function SocialAuth() {
-  return (
-    <>
-      <div className="relative my-3">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-border" />
-        </div>
-        <div className="relative flex justify-center">
-          <span className="bg-card px-3 text-xs font-medium text-muted-foreground">or continue with</span>
-        </div>
-      </div>
-      <div className="grid grid-cols-3 gap-2">
-        {["Google", "Facebook", "Apple"].map((p) => (
-          <button
-            key={p}
-            type="button"
-            className="rounded-xl border border-border/60 bg-card px-3 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-accent"
-          >
-            {p}
-          </button>
-        ))}
-      </div>
-    </>
   );
 }

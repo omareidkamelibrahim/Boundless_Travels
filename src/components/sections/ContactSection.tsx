@@ -49,7 +49,7 @@ export function ContactSection() {
 
   return (
     <section id="contact" className="relative py-16 sm:py-20 lg:py-24">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
         <SectionTitle
           eyebrow="Get in touch"
           align="center"
@@ -183,7 +183,7 @@ export function ContactSection() {
             </h3>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {BRANCHES.map((b, i) => (
-                <Reveal key={b.city} delay={i * 0.05} as="div">
+                <Reveal key={b.city} delay={i * 0.05} as="div" className="h-full">
                   <motion.div
                     whileHover={{ y: -4 }}
                     className="h-full rounded-2xl border border-border/60 bg-card p-5 shadow-premium"

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface CountdownTimerProps {
@@ -11,6 +12,30 @@ interface CountdownTimerProps {
 
 const pad = (n: number) => n.toString().padStart(2, "0");
 
+interface Parts {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
+function computeParts(target: number): Parts {
+  const diff = Math.max(0, target - Date.now());
+  return {
+    days: Math.floor(diff / 86_400_000),
+    hours: Math.floor(diff / 3_600_000) % 24,
+    minutes: Math.floor(diff / 60_000) % 60,
+    seconds: Math.floor(diff / 1000) % 60,
+  };
+}
+
+const PART_LABELS: { key: keyof Parts; label: string }[] = [
+  { key: "days", label: "Days" },
+  { key: "hours", label: "Hours" },
+  { key: "minutes", label: "Mins" },
+  { key: "seconds", label: "Secs" },
+];
+
 /** Countdown timer with day/hour/minute/second parts. */
 export function CountdownTimer({
   targetIso,
@@ -19,18 +44,22 @@ export function CountdownTimer({
   size = "md",
 }: CountdownTimerProps) {
   const target = new Date(targetIso).getTime();
-  const diff = Math.max(0, target - Date.now());
-  const days = Math.floor(diff / 86_400_000);
-  const hours = Math.floor(diff / 3_600_000) % 24;
-  const minutes = Math.floor(diff / 60_000) % 60;
-  const seconds = Math.floor(diff / 1000) % 60;
+  // SSR renders "--" placeholders; client takes over after mount to avoid hydration mismatch.
+  const [mounted, setMounted] = useState(false);
+  const [parts, setParts] = useState<Parts>(() => computeParts(target));
 
-  const parts = [
-    { label: "Days", value: days },
-    { label: "Hours", value: hours },
-    { label: "Mins", value: minutes },
-    { label: "Secs", value: seconds },
-  ];
+  useEffect(() => {
+    // Defer setState to a microtask so we don't trigger the synchronous-setState-in-effect lint rule.
+    const raf = requestAnimationFrame(() => {
+      setMounted(true);
+      setParts(computeParts(target));
+    });
+    const id = setInterval(() => setParts(computeParts(target)), 1000);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearInterval(id);
+    };
+  }, [target]);
 
   const sizes: Record<typeof size, string> = {
     sm: "text-base px-2.5 py-1.5",
@@ -40,7 +69,7 @@ export function CountdownTimer({
 
   return (
     <div className={cn("flex items-center gap-2", className)} role="timer" aria-live="polite">
-      {parts.map((p, i) => (
+      {PART_LABELS.map((p, i) => (
         <div key={p.label} className="flex items-center gap-2">
           <div
             className={cn(
@@ -51,12 +80,12 @@ export function CountdownTimer({
                 : "bg-primary text-primary-foreground shadow-sm",
             )}
           >
-            <span>{pad(p.value)}</span>
+            <span suppressHydrationWarning>{mounted ? pad(parts[p.key]) : "--"}</span>
             <span className="text-[0.6rem] font-sans font-medium uppercase tracking-wider opacity-80">
               {p.label}
             </span>
           </div>
-          {i < parts.length - 1 && (
+          {i < PART_LABELS.length - 1 && (
             <span className={cn("text-xl font-bold", variant === "light" ? "text-white/70" : "text-primary/40")}>
               :
             </span>

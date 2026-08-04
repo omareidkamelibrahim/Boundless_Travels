@@ -5,18 +5,26 @@ import { useEffect, useRef, useState } from "react";
 /**
  * Count-up animation that triggers when the element scrolls into view.
  * Respects prefers-reduced-motion.
+ *
+ * SSR-safe: always renders 0 on the server, then resolves prefers-reduced-motion
+ * in a useEffect (client-only) to avoid hydration mismatches.
+ *
+ * For reduced-motion users, we still need to apply the target value on the client
+ * — but we do it inside a microtask via requestAnimationFrame so it isn't a
+ * synchronous setState within the effect body.
  */
 export function useCountUp(target: number, durationMs = 1600, startOnView = true) {
-  // Lazy initial state — if reduced motion is preferred, start at target value
-  const prefersReducedMotion = typeof window !== "undefined"
-    ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    : false;
-  const [value, setValue] = useState(prefersReducedMotion ? target : 0);
+  const [value, setValue] = useState(0);
   const ref = useRef<HTMLSpanElement | null>(null);
   const startedRef = useRef(false);
 
   useEffect(() => {
-    if (prefersReducedMotion) return; // already at target
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) {
+      // Defer to next frame so we don't call setState synchronously inside the effect body.
+      const raf = requestAnimationFrame(() => setValue(target));
+      return () => cancelAnimationFrame(raf);
+    }
 
     const node = ref.current;
     if (!node) return;
@@ -50,7 +58,7 @@ export function useCountUp(target: number, durationMs = 1600, startOnView = true
     );
     obs.observe(node);
     return () => obs.disconnect();
-  }, [target, durationMs, startOnView, prefersReducedMotion]);
+  }, [target, durationMs, startOnView]);
 
   return { value, ref };
 }

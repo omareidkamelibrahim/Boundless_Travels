@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Plane,
   Mail,
@@ -18,6 +19,7 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useUI } from "@/stores/use-ui";
 
 const FOOTER_COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
@@ -81,6 +83,9 @@ const TRUST = [
 ];
 
 export function Footer() {
+  const openLegal = useUI((s) => s.openLegal);
+  const openSupport = useUI((s) => s.openSupport);
+  const router = useRouter();
   return (
     <footer id="contact" className="relative mt-24 overflow-hidden bg-slate-950 text-slate-300">
       {/* Glow */}
@@ -91,7 +96,7 @@ export function Footer() {
 
       {/* Trust strip */}
       <div className="relative border-b border-white/10">
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 divide-y divide-white/10 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
             {TRUST.map((t) => (
               <div key={t.label} className="flex items-center justify-center gap-2.5 py-5 text-sm font-medium text-white">
@@ -104,7 +109,7 @@ export function Footer() {
       </div>
 
       {/* Main */}
-      <div className="relative container mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <div className="relative container mx-auto max-w-[1440px] px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-4">
             <Link href="#home" className="flex items-center gap-2">
@@ -217,14 +222,37 @@ export function Footer() {
       </div>
 
       <div className="relative border-t border-white/10">
-        <div className="container mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
+        <div className="container mx-auto max-w-[1440px] px-4 py-5 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-between gap-3 text-xs text-slate-400 sm:flex-row">
-            <p>© {new Date().getFullYear()} BlueSky Travel. All rights reserved.</p>
-            <p className="flex items-center gap-1.5">
-              Crafted with
-              <span className="text-rose-400">♥</span>
-              in Cairo, Egypt
-            </p>
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+              <span>© {new Date().getFullYear()} BlueSky Travel. All rights reserved.</span>
+              <button onClick={() => openLegal("privacy")} className="hover:text-white transition-colors">Privacy</button>
+              <button onClick={() => openLegal("terms")} className="hover:text-white transition-colors">Terms</button>
+              <button onClick={() => openLegal("refund")} className="hover:text-white transition-colors">Refunds</button>
+              <button onClick={() => openLegal("cookie")} className="hover:text-white transition-colors">Cookies</button>
+              <button onClick={() => openLegal("faq")} className="hover:text-white transition-colors">FAQ</button>
+            </div>
+            <div className="flex items-center gap-3">
+              <p className="hidden sm:flex items-center gap-1.5">
+                Crafted with
+                <span className="text-rose-400">♥</span>
+                in Cairo, Egypt
+              </p>
+              <button
+                onClick={openSupport}
+                className="rounded-lg bg-white/5 px-2.5 py-1 text-[0.65rem] font-semibold text-slate-400 ring-1 ring-white/10 transition-all hover:bg-gradient-bluesky hover:text-white"
+                aria-label="Contact Support"
+              >
+                Support
+              </button>
+              <button
+                onClick={() => router.push("/admin")}
+                className="rounded-lg bg-white/5 px-2.5 py-1 text-[0.65rem] font-semibold text-slate-400 ring-1 ring-white/10 transition-all hover:bg-gradient-bluesky hover:text-white"
+                aria-label="Admin Dashboard"
+              >
+                Admin
+              </button>
+            </div>
           </div>
         </div>
       </div>

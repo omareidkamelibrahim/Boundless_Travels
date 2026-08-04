@@ -3,6 +3,14 @@
 import { create } from "zustand";
 
 type AuthView = "login" | "register" | "forgot" | "otp" | "reset";
+export type DashboardSection =
+  | "bookings"
+  | "wishlist"
+  | "profile"
+  | "notifications"
+  | "invoices"
+  | "payments"
+  | "settings";
 
 interface UIState {
   // Auth modal
@@ -41,6 +49,50 @@ interface UIState {
   // Active nav anchor
   activeSection?: string;
   setActiveSection: (section?: string) => void;
+
+  // User dashboard
+  dashboardOpen: boolean;
+  dashboardSection: DashboardSection;
+  openDashboard: (section?: DashboardSection) => void;
+  closeDashboard: () => void;
+  setDashboardSection: (section: DashboardSection) => void;
+
+  // Admin dashboard
+  adminOpen: boolean;
+  openAdmin: () => void;
+  closeAdmin: () => void;
+
+  // Legal modal (FAQ, Privacy, Terms, etc.)
+  legalOpen: boolean;
+  legalSection: "faq" | "privacy" | "terms" | "refund" | "cookie";
+  openLegal: (section?: "faq" | "privacy" | "terms" | "refund" | "cookie") => void;
+  closeLegal: () => void;
+  setLegalSection: (section: "faq" | "privacy" | "terms" | "refund" | "cookie") => void;
+
+  // Blog article modal
+  blogId?: string;
+  setBlogId: (id?: string) => void;
+  closeBlog: () => void;
+
+  // Hotel detail modal
+  hotelId?: string;
+  setHotelId: (id?: string) => void;
+
+  // Reviews modal
+  reviewsOpen: boolean;
+  reviewTripTitle?: string;
+  openReviews: (tripTitle?: string) => void;
+  closeReviews: () => void;
+
+  // Support ticket modal
+  supportOpen: boolean;
+  openSupport: () => void;
+  closeSupport: () => void;
+
+  // Checkout modal
+  checkoutOpen: boolean;
+  openCheckout: () => void;
+  closeCheckout: () => void;
 }
 
 export const useUI = create<UIState>((set) => ({
@@ -71,4 +123,40 @@ export const useUI = create<UIState>((set) => ({
 
   activeSection: undefined,
   setActiveSection: (section) => set({ activeSection: section }),
+
+  dashboardOpen: false,
+  dashboardSection: "bookings",
+  openDashboard: (section = "bookings") => set({ dashboardOpen: true, dashboardSection: section }),
+  closeDashboard: () => set({ dashboardOpen: false }),
+  setDashboardSection: (section) => set({ dashboardSection: section }),
+
+  adminOpen: false,
+  openAdmin: () => set({ adminOpen: true }),
+  closeAdmin: () => set({ adminOpen: false }),
+
+  legalOpen: false,
+  legalSection: "faq",
+  openLegal: (section = "faq") => set({ legalOpen: true, legalSection: section }),
+  closeLegal: () => set({ legalOpen: false }),
+  setLegalSection: (section) => set({ legalSection: section }),
+
+  blogId: undefined,
+  setBlogId: (id) => set({ blogId: id }),
+  closeBlog: () => set({ blogId: undefined }),
+
+  hotelId: undefined,
+  setHotelId: (id) => set({ hotelId: id }),
+
+  reviewsOpen: false,
+  reviewTripTitle: undefined,
+  openReviews: (tripTitle) => set({ reviewsOpen: true, reviewTripTitle: tripTitle }),
+  closeReviews: () => set({ reviewsOpen: false, reviewTripTitle: undefined }),
+
+  supportOpen: false,
+  openSupport: () => set({ supportOpen: true }),
+  closeSupport: () => set({ supportOpen: false }),
+
+  checkoutOpen: false,
+  openCheckout: () => set({ checkoutOpen: true, cartOpen: false }),
+  closeCheckout: () => set({ checkoutOpen: false }),
 }));

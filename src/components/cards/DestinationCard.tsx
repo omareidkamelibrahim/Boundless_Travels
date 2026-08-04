@@ -24,7 +24,7 @@ export function DestinationCard({ destination, className, size = "md", onClick }
       whileHover={{ y: -4 }}
       onClick={() => onClick?.(destination)}
       className={cn(
-        "group relative cursor-pointer overflow-hidden rounded-2xl shadow-premium",
+        "group relative h-full cursor-pointer overflow-hidden rounded-2xl shadow-premium",
         heightClass,
         className,
       )}

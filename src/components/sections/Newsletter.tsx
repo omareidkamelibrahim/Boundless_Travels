@@ -23,8 +23,8 @@ export function Newsletter() {
   };
 
   return (
-    <section className="relative py-16 sm:py-20 lg:py-24">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden py-16 sm:py-20 lg:py-24">
+      <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
         <Reveal as="div">
           <div className="relative overflow-hidden rounded-3xl bg-gradient-bluesky p-1 shadow-premium-lg">
             <div className="relative overflow-hidden rounded-[calc(1.5rem-4px)] bg-gradient-to-br from-primary to-secondary p-8 sm:p-12 lg:p-16">
