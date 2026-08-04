@@ -2,146 +2,86 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  Plane,
-  Mail,
-  Phone,
-  MapPin,
-  Facebook,
-  Twitter,
-  Instagram,
-  Youtube,
-  Linkedin,
-  Send,
-  ShieldCheck,
-  Award,
-  Headset,
-} from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Plane, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 import { useUI } from "@/stores/use-ui";
 
-const FOOTER_COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
-  {
-    title: "Destinations",
-    links: [
-      { label: "Egypt", href: "#" },
-      { label: "United Arab Emirates", href: "#" },
-      { label: "Turkey", href: "#" },
-      { label: "Maldives", href: "#" },
-      { label: "Greece", href: "#" },
-      { label: "Thailand", href: "#" },
-    ],
-  },
-  {
-    title: "Services",
-    links: [
-      { label: "Domestic Trips", href: "#domestic" },
-      { label: "International Trips", href: "#international" },
-      { label: "Hotels", href: "#hotels" },
-      { label: "Flights", href: "#flights" },
-      { label: "Visa Services", href: "#visa" },
-      { label: "Travel Insurance", href: "#" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { label: "About Us", href: "#about" },
-      { label: "Blog", href: "#blog" },
-      { label: "Careers", href: "#" },
-      { label: "Press", href: "#" },
-      { label: "Partners", href: "#" },
-      { label: "Affiliates", href: "#" },
-    ],
-  },
-  {
-    title: "Support",
-    links: [
-      { label: "Help Center", href: "#contact" },
-      { label: "Contact Us", href: "#contact" },
-      { label: "Booking Policy", href: "#" },
-      { label: "Cancellation", href: "#" },
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Service", href: "#" },
-    ],
-  },
+const FOOTER_LINKS: { label: string; href: string }[] = [
+  { label: "Home", href: "/" },
+  { label: "About Us", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Tour Packages", href: "/packages" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const SOCIALS = [
   { icon: Facebook, label: "Facebook", href: "#" },
   { icon: Twitter, label: "Twitter", href: "#" },
   { icon: Instagram, label: "Instagram", href: "#" },
-  { icon: Youtube, label: "YouTube", href: "#" },
   { icon: Linkedin, label: "LinkedIn", href: "#" },
-];
-
-const TRUST = [
-  { icon: ShieldCheck, label: "Secure Payments" },
-  { icon: Award, label: "Award Winning" },
-  { icon: Headset, label: "24/7 Support" },
 ];
 
 export function Footer() {
   const openLegal = useUI((s) => s.openLegal);
   const openSupport = useUI((s) => s.openSupport);
   const router = useRouter();
+
   return (
-    <footer id="contact" className="relative mt-24 overflow-hidden bg-slate-950 text-slate-300">
-      {/* Glow */}
-      <div className="pointer-events-none absolute inset-0 opacity-30">
-        <div className="absolute -left-40 top-0 size-[28rem] rounded-full bg-primary/30 blur-[120px]" />
-        <div className="absolute -right-40 bottom-0 size-[28rem] rounded-full bg-accent/30 blur-[120px]" />
-      </div>
-
-      {/* Trust strip */}
-      <div className="relative border-b border-white/10">
-        <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 divide-y divide-white/10 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-            {TRUST.map((t) => (
-              <div key={t.label} className="flex items-center justify-center gap-2.5 py-5 text-sm font-medium text-white">
-                <t.icon className="size-5 text-accent" />
-                {t.label}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Main */}
-      <div className="relative container mx-auto max-w-[1440px] px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-4">
-            <Link href="#home" className="flex items-center gap-2">
-              <div className="relative grid size-10 place-items-center rounded-xl bg-gradient-bluesky shadow-glow-bluesky">
+    <footer className="border-t border-border/60 bg-slate-950 text-slate-400">
+      <div className="container mx-auto max-w-[1440px] px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Brand + contact */}
+          <div className="lg:col-span-2">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="grid size-9 place-items-center rounded-xl bg-gradient-bluesky">
                 <Plane className="size-5 -rotate-45 text-white" />
               </div>
-              <div className="flex flex-col leading-none">
-                <span className="text-lg font-extrabold tracking-tight text-white">BlueSky</span>
-                <span className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-accent">
-                  Travel
-                </span>
-              </div>
+              <span className="text-lg font-bold text-white">BlueSky Travel</span>
             </Link>
-            <p className="mt-5 max-w-sm text-sm leading-relaxed text-slate-400">
-              BlueSky Travel is your trusted partner for premium journeys across Egypt and the world.
-              From pyramids to overwater villas, we craft unforgettable experiences with a 4.9★
-              average rating from 48,000+ travelers.
+            <p className="mt-4 max-w-xs text-sm leading-relaxed">
+              Your trusted partner for premium journeys across Egypt and the world.
             </p>
-
-            <div className="mt-6 space-y-2.5 text-sm">
-              <a href="mailto:hello@bluesky.travel" className="flex items-center gap-2.5 text-slate-400 transition-colors hover:text-accent">
-                <Mail className="size-4" /> hello@bluesky.travel
+            <div className="mt-4 space-y-1.5 text-sm">
+              <a href="mailto:hello@bluesky.travel" className="flex items-center gap-2 transition-colors hover:text-white">
+                <Mail className="size-3.5" /> hello@bluesky.travel
               </a>
-              <a href="tel:+202212345678" className="flex items-center gap-2.5 text-slate-400 transition-colors hover:text-accent">
-                <Phone className="size-4" /> +20 22 123 4567
+              <a href="tel:+202212345678" className="flex items-center gap-2 transition-colors hover:text-white">
+                <Phone className="size-3.5" /> +20 22 123 4567
               </a>
-              <p className="flex items-center gap-2.5 text-slate-400">
-                <MapPin className="size-4" /> 14 Tahrir Square, Cairo, Egypt
+              <p className="flex items-center gap-2">
+                <MapPin className="size-3.5" /> 14 Tahrir Square, Cairo, Egypt
               </p>
             </div>
+          </div>
 
-            <div className="mt-6 flex items-center gap-2">
+          {/* Quick links */}
+          <div>
+            <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">Quick Links</h4>
+            <ul className="space-y-2">
+              {FOOTER_LINKS.map((link) => (
+                <li key={link.label}>
+                  <button
+                    onClick={() => router.push(link.href)}
+                    className="text-sm transition-colors hover:text-white"
+                  >
+                    {link.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Legal + social */}
+          <div>
+            <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">Legal</h4>
+            <ul className="space-y-2">
+              <li><button onClick={() => openLegal("privacy")} className="text-sm transition-colors hover:text-white">Privacy Policy</button></li>
+              <li><button onClick={() => openLegal("terms")} className="text-sm transition-colors hover:text-white">Terms of Service</button></li>
+              <li><button onClick={() => openLegal("refund")} className="text-sm transition-colors hover:text-white">Refund Policy</button></li>
+              <li><button onClick={() => openLegal("faq")} className="text-sm transition-colors hover:text-white">FAQ</button></li>
+              <li><button onClick={openSupport} className="text-sm transition-colors hover:text-white">Support</button></li>
+            </ul>
+            <div className="mt-4 flex items-center gap-2">
               {SOCIALS.map((s) => {
                 const Icon = s.icon;
                 return (
@@ -149,109 +89,33 @@ export function Footer() {
                     key={s.label}
                     href={s.href}
                     aria-label={s.label}
-                    className="grid size-9 place-items-center rounded-xl bg-white/5 text-slate-300 ring-1 ring-white/10 transition-all hover:bg-gradient-bluesky hover:text-white hover:shadow-glow-bluesky"
+                    className="grid size-8 place-items-center rounded-lg bg-white/5 transition-colors hover:bg-gradient-bluesky hover:text-white"
                   >
-                    <Icon className="size-4" />
+                    <Icon className="size-3.5" />
                   </a>
                 );
               })}
             </div>
           </div>
-
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:col-span-5">
-            {FOOTER_COLUMNS.map((col) => (
-              <div key={col.title}>
-                <h4 className="mb-3 text-xs font-bold uppercase tracking-[0.15em] text-white">
-                  {col.title}
-                </h4>
-                <ul className="space-y-2.5">
-                  {col.links.map((link) => (
-                    <li key={link.label}>
-                      <a
-                        href={link.href}
-                        className="text-sm text-slate-400 transition-colors hover:text-accent"
-                      >
-                        {link.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          <div className="lg:col-span-3">
-            <h4 className="mb-3 text-xs font-bold uppercase tracking-[0.15em] text-white">
-              Travel Deals Newsletter
-            </h4>
-            <p className="mb-4 text-sm text-slate-400">
-              Get exclusive offers, flash deals, and travel inspiration delivered to your inbox.
-            </p>
-            <form className="flex flex-col gap-2" onSubmit={(e) => e.preventDefault()}>
-              <Input
-                type="email"
-                placeholder="your@email.com"
-                className="border-white/10 bg-white/5 text-white placeholder:text-slate-500 focus-visible:border-accent"
-                aria-label="Email address"
-              />
-              <Button
-                type="submit"
-                className="bg-gradient-bluesky shadow-glow-bluesky"
-              >
-                <Send className="size-4" />
-                Subscribe
-              </Button>
-            </form>
-
-            <div className="mt-6 flex flex-wrap items-center gap-2">
-              <span className="rounded-md bg-white/5 px-2 py-1 text-[0.65rem] font-semibold text-slate-300 ring-1 ring-white/10">
-                Visa
-              </span>
-              <span className="rounded-md bg-white/5 px-2 py-1 text-[0.65rem] font-semibold text-slate-300 ring-1 ring-white/10">
-                Mastercard
-              </span>
-              <span className="rounded-md bg-white/5 px-2 py-1 text-[0.65rem] font-semibold text-slate-300 ring-1 ring-white/10">
-                PayPal
-              </span>
-              <span className="rounded-md bg-white/5 px-2 py-1 text-[0.65rem] font-semibold text-slate-300 ring-1 ring-white/10">
-                Apple Pay
-              </span>
-            </div>
-          </div>
         </div>
       </div>
 
-      <div className="relative border-t border-white/10">
+      {/* Bottom bar */}
+      <div className="border-t border-white/5">
         <div className="container mx-auto max-w-[1440px] px-4 py-5 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-between gap-3 text-xs text-slate-400 sm:flex-row">
-            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
-              <span>© {new Date().getFullYear()} BlueSky Travel. All rights reserved.</span>
-              <button onClick={() => openLegal("privacy")} className="hover:text-white transition-colors">Privacy</button>
-              <button onClick={() => openLegal("terms")} className="hover:text-white transition-colors">Terms</button>
-              <button onClick={() => openLegal("refund")} className="hover:text-white transition-colors">Refunds</button>
-              <button onClick={() => openLegal("cookie")} className="hover:text-white transition-colors">Cookies</button>
-              <button onClick={() => openLegal("faq")} className="hover:text-white transition-colors">FAQ</button>
-            </div>
+          <div className="flex flex-col items-center justify-between gap-2 text-xs sm:flex-row">
+            <p>© {new Date().getFullYear()} BlueSky Travel. All rights reserved.</p>
             <div className="flex items-center gap-3">
-              <p className="hidden sm:flex items-center gap-1.5">
-                Crafted with
-                <span className="text-rose-400">♥</span>
-                in Cairo, Egypt
-              </p>
-              <button
-                onClick={openSupport}
-                className="rounded-lg bg-white/5 px-2.5 py-1 text-[0.65rem] font-semibold text-slate-400 ring-1 ring-white/10 transition-all hover:bg-gradient-bluesky hover:text-white"
-                aria-label="Contact Support"
-              >
-                Support
-              </button>
               <button
                 onClick={() => router.push("/admin")}
-                className="rounded-lg bg-white/5 px-2.5 py-1 text-[0.65rem] font-semibold text-slate-400 ring-1 ring-white/10 transition-all hover:bg-gradient-bluesky hover:text-white"
-                aria-label="Admin Dashboard"
+                className="text-slate-500 transition-colors hover:text-white"
               >
                 Admin
               </button>
+              <span className="text-slate-600">·</span>
+              <p className="flex items-center gap-1">
+                Crafted with <span className="text-rose-400">♥</span> in Cairo
+              </p>
             </div>
           </div>
         </div>
