@@ -51,12 +51,12 @@ import { useActiveSection } from "@/hooks/use-active-section";
 import { toast } from "sonner";
 
 const NAV_ITEMS: { label: string; href: string; section?: string; icon: React.ElementType }[] = [
-  { label: "Home", href: "#home", section: "home", icon: Home },
-  { label: "About Us", href: "#about", section: "about", icon: Info },
-  { label: "Services", href: "#services", section: "services", icon: PlaneTakeoff },
-  { label: "Tour Packages", href: "#packages", section: "packages", icon: MapPinned },
-  { label: "Gallery", href: "#gallery", section: "gallery", icon: Hotel },
-  { label: "Contact Us", href: "#contact", section: "contact", icon: Phone },
+  { label: "Home", href: "/", icon: Home },
+  { label: "About Us", href: "/about", icon: Info },
+  { label: "Services", href: "/services", icon: PlaneTakeoff },
+  { label: "Tour Packages", href: "/packages", icon: MapPinned },
+  { label: "Gallery", href: "/gallery", icon: Hotel },
+  { label: "Contact Us", href: "/contact", icon: Phone },
 ];
 
 const LANGUAGES = [
@@ -86,7 +86,7 @@ export function Navbar() {
   const user = useAuth((s) => s.user);
   const logout = useAuth((s) => s.logout);
 
-  const active = useActiveSection(NAV_ITEMS.map((i) => i.section!).filter(Boolean));
+  const active = useActiveSection([]);
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 24);
@@ -97,13 +97,10 @@ export function Navbar() {
 
   const handleNavClick = (e: React.MouseEvent, href: string) => {
     e.preventDefault();
-    const id = href.replace("#", "");
-    if (id === "home") {
+    if (href === "/") {
       window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      const el = document.getElementById(id);
-      el?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+    router.push(href);
     setMobileMenuOpen(false);
   };
 
@@ -142,26 +139,16 @@ export function Navbar() {
           {/* Desktop nav — text-only links to fit all 10 items at xl */}
           <nav className="hidden items-center gap-0 xl:flex" aria-label="Main navigation">
             {NAV_ITEMS.map((item) => {
-              const isActive = active === item.section;
               return (
                 <a
                   key={item.label}
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href)}
                   className={cn(
-                    "group relative inline-flex items-center rounded-lg px-2 py-2 text-[0.8rem] font-medium transition-colors",
-                    isActive
-                      ? "text-primary"
-                      : "text-foreground/80 hover:text-primary",
+                    "group relative inline-flex items-center rounded-lg px-2 py-2 text-[0.8rem] font-medium transition-colors text-foreground/80 hover:text-primary",
                   )}
                 >
                   <span>{item.label}</span>
-                  {isActive && (
-                    <motion.span
-                      layoutId="nav-active"
-                      className="absolute inset-x-1.5 -bottom-0.5 h-0.5 rounded-full bg-gradient-bluesky"
-                    />
-                  )}
                 </a>
               );
             })}
@@ -384,7 +371,7 @@ export function Navbar() {
                 <span className="hidden lg:inline">Call Now</span>
               </a>
               <button
-                onClick={() => document.getElementById("packages")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() => router.push("/packages")}
                 className="rounded-xl bg-gradient-bluesky px-3 py-1.5 text-xs font-bold text-white shadow-glow-bluesky transition-transform hover:scale-105"
               >
                 Book Now
