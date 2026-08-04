@@ -168,7 +168,7 @@ export default function RootLayout({
             Must be in <head> (not globals.css) because Tailwind v4 strips plain
             CSS rules from @layer base. */}
         <style dangerouslySetInnerHTML={{
-          __html: `section[id] { scroll-margin-top: 5rem; }`,
+          __html: `section[id] { scroll-margin-top: 6rem; }`,
         }} />
       </head>
       <body
