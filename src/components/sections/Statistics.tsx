@@ -54,7 +54,7 @@ function StatItem({ icon: Icon, counter, label }: { icon: React.ElementType; cou
       <div className="grid size-12 place-items-center rounded-2xl bg-white/15 backdrop-blur-md ring-1 ring-white/25">
         <Icon className="size-6 text-white" />
       </div>
-      <p className="text-3xl font-extrabold text-white sm:text-4xl">{counter}</p>
+      <div className="text-3xl font-extrabold text-white sm:text-4xl">{counter}</div>
       <p className="text-sm font-medium text-white/80">{label}</p>
     </motion.div>
   );
