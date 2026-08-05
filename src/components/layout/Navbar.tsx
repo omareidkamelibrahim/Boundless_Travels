@@ -4,15 +4,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
-import {
-  Plane, Heart, Search, Menu, User, ChevronDown, Globe, X,
-  Home, Info, PlaneTakeoff, MapPinned, Hotel, Phone, Bell,
-  LogOut, LogIn, UserPlus, Settings, CreditCard, ShoppingCart,
-  Compass, Stamp, Bus, Tag, Package,
-} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Search, Heart, Phone, Menu, X, Globe, ChevronDown,
+  Plane, Hotel, PlaneTakeoff, Stamp, Bus, Shield,
+  MapPin, Users, Star,
+  Bell, User, LogOut, Settings, CreditCard, LogIn, UserPlus,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
@@ -20,52 +19,38 @@ import {
 import { GradientAvatar } from "@/components/auth/GradientAvatar";
 import { useUI } from "@/stores/use-ui";
 import { useWishlist } from "@/stores/use-wishlist";
-import { useCart } from "@/stores/use-cart";
 import { useAuth } from "@/stores/use-auth";
 import { toast } from "sonner";
 
-// ===== Navigation config with mega-menu support =====
-interface NavItem {
-  label: string;
-  href: string;
-  mega?: { title: string; items: { label: string; href: string; icon: React.ElementType }[] }[];
-}
-
-const NAV_ITEMS: NavItem[] = [
+// Simple nav items (no mega menu)
+const NAV_ITEMS = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
-  {
-    label: "Services", href: "/services",
-    mega: [
-      { title: "Travel", items: [
-        { label: "Tour Packages", href: "/packages", icon: Package },
-        { label: "Hotel Booking", href: "/packages", icon: Hotel },
-        { label: "Flight Booking", href: "/packages", icon: PlaneTakeoff },
-      ]},
-      { title: "Support", items: [
-        { label: "Visa Services", href: "/services", icon: Stamp },
-        { label: "Transportation", href: "/services", icon: Bus },
-        { label: "Travel Insurance", href: "/services", icon: Shield },
-      ]},
-    ],
-  },
-  {
-    label: "Tour Packages", href: "/packages",
-    mega: [
-      { title: "By Destination", items: [
-        { label: "Egypt Tours", href: "/packages", icon: MapPinned },
-        { label: "Maldives", href: "/packages", icon: Hotel },
-        { label: "Turkey", href: "/packages", icon: Compass },
-      ]},
-      { title: "By Type", items: [
-        { label: "Honeymoon", href: "/packages", icon: Heart },
-        { label: "Family Trips", href: "/packages", icon: User },
-        { label: "Adventure", href: "/packages", icon: Plane },
-      ]},
-    ],
-  },
+  { label: "Services", href: "/services" },
+  { label: "Destinations", href: "/packages" },
+  { label: "Tour Packages", href: "/packages" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Contact Us", href: "/contact" },
+  { label: "Contact", href: "/contact" },
+];
+
+// Mega menu items for "Services"
+const SERVICES_MEGA = [
+  { icon: Plane, title: "Tour Packages", desc: "Curated domestic & international trips", href: "/packages" },
+  { icon: Hotel, title: "Hotel Booking", desc: "5,000+ hotels at best prices", href: "/packages" },
+  { icon: PlaneTakeoff, title: "Flight Booking", desc: "Compare hundreds of airlines", href: "/packages" },
+  { icon: Stamp, title: "Visa Services", desc: "Fast processing for 50+ countries", href: "/services" },
+  { icon: Bus, title: "Transportation", desc: "Private transfers & car rentals", href: "/services" },
+  { icon: Shield, title: "Travel Insurance", desc: "Comprehensive trip protection", href: "/services" },
+];
+
+// Mega menu items for "Destinations"
+const DESTINATIONS_MEGA = [
+  { icon: MapPin, title: "Egypt", desc: "Pyramids, Nile, Red Sea", href: "/packages?country=egypt" },
+  { icon: MapPin, title: "UAE", desc: "Dubai & Abu Dhabi luxury", href: "/packages?country=uae" },
+  { icon: MapPin, title: "Turkey", desc: "Istanbul, Cappadocia, Antalya", href: "/packages?country=turkey" },
+  { icon: MapPin, title: "Maldives", desc: "Overwater villas & diving", href: "/packages?country=maldives" },
+  { icon: MapPin, title: "Greece", desc: "Santorini, Athens, islands", href: "/packages?country=greece" },
+  { icon: MapPin, title: "Thailand", desc: "Bangkok, Phuket, temples", href: "/packages?country=thailand" },
 ];
 
 const LANGUAGES = [
@@ -77,34 +62,16 @@ const LANGUAGES = [
   { code: "zh", label: "中文", flag: "🇨🇳" },
 ];
 
-// Shield icon for mega menu
-function Shield(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
-    </svg>
-  );
-}
-
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [lang, setLang] = useState(LANGUAGES[0]);
-  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
 
-  const openAuth = useUI((s) => s.openAuth);
-  const setWishlistOpen = useUI((s) => s.setWishlistOpen);
-  const setCartOpen = useUI((s) => s.setCartOpen);
-  const setCommandOpen = useUI((s) => s.setCommandOpen);
-  const mobileMenuOpen = useUI((s) => s.mobileMenuOpen);
-  const setMobileMenuOpen = useUI((s) => s.setMobileMenuOpen);
-
+  const { setCommandOpen, openAuth, setWishlistOpen, mobileMenuOpen: storeMenuOpen, setMobileMenuOpen } = useUI();
   const wishlistCount = useWishlist((s) => s.items.length);
-  const cartCount = useCart((s) => s.count());
-  const isAuthenticated = useAuth((s) => s.isAuthenticated);
-  const user = useAuth((s) => s.user);
-  const logout = useAuth((s) => s.logout);
+  const { isAuthenticated, user, logout } = useAuth();
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
@@ -113,309 +80,224 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  const handleNavClick = (e: React.MouseEvent, href: string) => {
-    e.preventDefault();
-    if (href === "/") window.scrollTo({ top: 0, behavior: "smooth" });
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname, setMobileMenuOpen]);
+
+  const handleNav = (href: string) => {
     router.push(href);
     setMobileMenuOpen(false);
-    setHoveredNav(null);
   };
 
-  const isActive = (href: string) => {
-    if (href === "/") return pathname === "/";
-    return pathname.startsWith(href);
-  };
+  const isHome = pathname === "/";
+  const transparentHeader = isHome && !scrolled;
 
   return (
     <header
       className={cn(
         "sticky top-0 z-50 transition-all duration-300",
-        scrolled ? "py-1.5" : "py-2.5 sm:py-3",
+        transparentHeader
+          ? "bg-transparent"
+          : "glass shadow-premium",
       )}
     >
       <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
-        <div
-          className={cn(
-            "flex items-center justify-between gap-2 rounded-2xl px-3 py-2 transition-all duration-300 sm:px-4",
-            scrolled
-              ? "glass shadow-premium"
-              : "bg-white/40 backdrop-blur-md ring-1 ring-white/40",
-          )}
-        >
-          {/* ===== LEFT: Logo + Nav ===== */}
-          <div className="flex items-center gap-4">
-            {/* Logo */}
-            <Link href="/" onClick={(e) => { e.preventDefault(); router.push("/"); }} className="flex items-center gap-2 shrink-0">
-              <Image src="/logo-boundless.jpeg" alt="Boundless — Your Travel Guide" width={scrolled ? 32 : 36} height={scrolled ? 32 : 36} className="rounded-lg transition-all" />
-              <div className="flex flex-col leading-none">
-                <span className="text-sm font-extrabold tracking-tight text-foreground sm:text-base">BOUNDLESS</span>
-                <span className="hidden text-[0.5rem] font-semibold uppercase tracking-[0.2em] text-primary sm:block">Your Travel Guide</span>
-              </div>
-            </Link>
+        <div className={cn("flex items-center justify-between gap-2 transition-all duration-300", scrolled ? "h-14" : "h-16 sm:h-18")}>
+          {/* ===== LEFT: Logo ===== */}
+          <Link href="/" className="flex shrink-0 items-center gap-2">
+            <Image src="/logo-boundless.jpeg" alt="BOUNDLESS" width={scrolled ? 32 : 36} height={scrolled ? 32 : 36} className="rounded-lg transition-all duration-300" />
+            <div className="flex flex-col leading-none">
+              <span className={cn("text-base font-extrabold tracking-tight transition-colors", transparentHeader ? "text-white" : "text-foreground")}>BOUNDLESS</span>
+              <span className="text-[0.5rem] font-semibold uppercase tracking-[0.2em] text-primary">Your Travel Guide</span>
+            </div>
+          </Link>
 
-            {/* Desktop Navigation with mega menu */}
-            <nav className="hidden items-center lg:flex" aria-label="Main navigation" onMouseLeave={() => setHoveredNav(null)}>
-              {NAV_ITEMS.map((item) => (
-                <div key={item.label} className="relative" onMouseEnter={() => setHoveredNav(item.label)}>
-                  <a
-                    href={item.href}
-                    onClick={(e) => handleNavClick(e, item.href)}
+          {/* ===== CENTER: Navigation ===== */}
+          <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Main navigation"
+            onMouseLeave={() => setHoveredItem(null)}
+          >
+            {NAV_ITEMS.map((item) => {
+              const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+              const hasMega = item.label === "Services" || item.label === "Destinations";
+              return (
+                <div key={item.label} className="relative" onMouseEnter={() => setHoveredItem(hasMega ? item.label : null)}>
+                  <button
+                    onClick={() => handleNav(item.href)}
                     className={cn(
-                      "flex items-center gap-1 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors",
-                      isActive(item.href)
-                        ? "text-primary"
-                        : "text-foreground/75 hover:text-primary",
+                      "flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-all",
+                      transparentHeader
+                        ? isActive ? "text-white" : "text-white/80 hover:text-white"
+                        : isActive ? "text-primary" : "text-foreground/80 hover:text-primary",
                     )}
                   >
                     {item.label}
-                    {item.mega && <ChevronDown className={cn("size-3 opacity-50 transition-transform", hoveredNav === item.label && "rotate-180")} />}
-                  </a>
-
-                  {/* Active underline */}
-                  {isActive(item.href) && (
-                    <motion.span layoutId="nav-active" className="absolute inset-x-2 -bottom-0.5 h-0.5 rounded-full bg-gradient-bluesky" />
+                    {hasMega && <ChevronDown className={cn("size-3 transition-transform", hoveredItem === item.label && "rotate-180")} />}
+                  </button>
+                  {/* Active indicator */}
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-active-indicator"
+                      className={cn("absolute -bottom-0.5 left-3 right-3 h-0.5 rounded-full", transparentHeader ? "bg-white" : "bg-primary")}
+                    />
                   )}
-
                   {/* Mega menu */}
-                  {item.mega && hoveredNav === item.label && (
-                    <AnimatePresence>
+                  <AnimatePresence>
+                    {hoveredItem === item.label && (
                       <motion.div
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 8 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute left-0 top-full mt-1 w-[480px] rounded-2xl border border-border/60 bg-card p-4 shadow-premium-lg"
+                        transition={{ duration: 0.15 }}
+                        className="absolute left-1/2 top-full mt-1 w-[480px] -translate-x-1/2"
                       >
-                        <div className="grid grid-cols-2 gap-4">
-                          {item.mega.map((col) => (
-                            <div key={col.title}>
-                              <p className="mb-2 px-2 text-[0.65rem] font-bold uppercase tracking-wider text-muted-foreground">{col.title}</p>
-                              <div className="space-y-0.5">
-                                {col.items.map((sub) => {
-                                  const Icon = sub.icon;
-                                  return (
-                                    <a
-                                      key={sub.label}
-                                      href={sub.href}
-                                      onClick={(e) => handleNavClick(e, sub.href)}
-                                      className="flex items-center gap-2.5 rounded-lg px-2 py-2 text-sm text-foreground/80 transition-colors hover:bg-accent hover:text-primary"
-                                    >
-                                      <Icon className="size-4 text-primary" />
-                                      {sub.label}
-                                    </a>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          ))}
+                        <div className="rounded-2xl border border-border/60 bg-card p-3 shadow-premium-lg">
+                          <div className="grid grid-cols-2 gap-1">
+                            {(item.label === "Services" ? SERVICES_MEGA : DESTINATIONS_MEGA).map((mega) => {
+                              const Icon = mega.icon;
+                              return (
+                                <button
+                                  key={mega.title}
+                                  onClick={() => handleNav(mega.href)}
+                                  className="flex items-start gap-3 rounded-xl p-3 text-left transition-colors hover:bg-accent"
+                                >
+                                  <div className="grid size-9 shrink-0 place-items-center rounded-lg bg-gradient-bluesky-soft text-primary ring-1 ring-primary/15">
+                                    <Icon className="size-4" />
+                                  </div>
+                                  <div className="min-w-0">
+                                    <p className="text-sm font-bold text-foreground">{mega.title}</p>
+                                    <p className="text-xs text-muted-foreground">{mega.desc}</p>
+                                  </div>
+                                </button>
+                              );
+                            })}
+                          </div>
                         </div>
                       </motion.div>
-                    </AnimatePresence>
-                  )}
+                    )}
+                  </AnimatePresence>
                 </div>
-              ))}
-            </nav>
-          </div>
-
-          {/* ===== CENTER: Search (desktop only) ===== */}
-          <button
-            onClick={() => setCommandOpen(true)}
-            className="hidden items-center gap-2 rounded-xl border border-border/40 bg-white/50 px-3 py-1.5 text-sm text-muted-foreground backdrop-blur-md transition-colors hover:border-primary/30 hover:bg-white xl:flex"
-            aria-label="Search"
-          >
-            <Search className="size-3.5" />
-            <span className="text-xs">Search destinations...</span>
-            <kbd className="ml-6 rounded border border-border/40 bg-muted/30 px-1.5 py-0.5 text-[0.6rem] font-mono">⌘K</kbd>
-          </button>
+              );
+            })}
+          </nav>
 
           {/* ===== RIGHT: Actions ===== */}
           <div className="flex items-center gap-1">
-            {/* Search icon (mobile/tablet) */}
-            <button
-              onClick={() => setCommandOpen(true)}
-              aria-label="Search"
-              className="grid size-8 place-items-center rounded-lg text-foreground/75 transition-colors hover:bg-accent hover:text-primary xl:hidden"
-            >
+            {/* Search */}
+            <button onClick={() => setCommandOpen(true)} aria-label="Search"
+              className={cn("grid size-8 place-items-center rounded-lg transition-colors", transparentHeader ? "text-white/80 hover:bg-white/10 hover:text-white" : "text-foreground/80 hover:bg-accent hover:text-primary")}>
               <Search className="size-4" />
             </button>
 
-            {/* Language switcher */}
+            {/* Language */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button
-                  aria-label="Switch language"
-                  className="hidden items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium text-foreground/75 transition-colors hover:bg-accent hover:text-primary lg:inline-flex"
-                >
+                <button aria-label="Language" className={cn("hidden items-center gap-1 rounded-lg px-2 py-1.5 transition-colors sm:flex", transparentHeader ? "text-white/80 hover:bg-white/10 hover:text-white" : "text-foreground/80 hover:bg-accent hover:text-primary")}>
                   <Globe className="size-4" />
-                  <span className="hidden xl:inline">{lang.flag}</span>
-                  <ChevronDown className="size-3 opacity-50" />
+                  <span className="text-sm">{lang.flag}</span>
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuLabel>Language</DropdownMenuLabel>
-                <DropdownMenuSeparator />
                 {LANGUAGES.map((l) => (
                   <DropdownMenuItem key={l.code} onClick={() => setLang(l)} className={cn(lang.code === l.code && "bg-accent/50")}>
-                    <span className="text-base">{l.flag}</span>
-                    <span>{l.label}</span>
+                    <span className="text-base">{l.flag}</span> {l.label}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
 
             {/* Wishlist */}
-            <button
-              onClick={() => setWishlistOpen(true)}
-              aria-label="Wishlist"
-              className="relative grid size-8 place-items-center rounded-lg text-foreground/75 transition-colors hover:bg-accent hover:text-primary"
-            >
+            <button onClick={() => setWishlistOpen(true)} aria-label="Wishlist"
+              className={cn("relative grid size-8 place-items-center rounded-lg transition-colors", transparentHeader ? "text-white/80 hover:bg-white/10 hover:text-white" : "text-foreground/80 hover:bg-accent hover:text-primary")}>
               <Heart className="size-4" />
               {wishlistCount > 0 && (
                 <span className="absolute -right-0.5 -top-0.5 grid min-w-[1rem] place-items-center rounded-full bg-rose-500 px-1 text-[0.55rem] font-bold text-white">{wishlistCount}</span>
               )}
             </button>
 
-            {/* Cart */}
-            <button
-              onClick={() => setCartOpen(true)}
-              aria-label="Shopping cart"
-              className="relative grid size-8 place-items-center rounded-lg text-foreground/75 transition-colors hover:bg-accent hover:text-primary"
-            >
-              <ShoppingCart className="size-4" />
-              {cartCount > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 grid min-w-[1rem] place-items-center rounded-full bg-primary px-1 text-[0.55rem] font-bold text-primary-foreground">{cartCount}</span>
-              )}
-            </button>
-
             {/* User Account */}
             {isAuthenticated && user ? (
-              <>
-                {/* Notifications */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button aria-label="Notifications" className="relative grid size-8 place-items-center rounded-lg text-foreground/75 transition-colors hover:bg-accent hover:text-primary">
-                      <Bell className="size-4" />
-                      <span className="absolute -right-0.5 -top-0.5 grid min-w-[1rem] place-items-center rounded-full bg-rose-500 px-1 text-[0.55rem] font-bold text-white">2</span>
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-72 rounded-xl p-0">
-                    <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
-                      <span className="text-sm font-bold">Notifications</span>
-                      <button onClick={() => router.push("/account?section=notifications")} className="text-xs font-semibold text-primary hover:underline">View all</button>
-                    </div>
-                    <DropdownMenuItem onClick={() => router.push("/account?section=notifications")} className="flex-col items-start gap-0.5 border-b border-border/40 py-2.5">
-                      <p className="text-xs font-bold text-foreground">Trip confirmed!</p>
-                      <p className="text-[0.7rem] text-muted-foreground">Your Maldives trip is confirmed for Mar 15.</p>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push("/account?section=notifications")} className="flex-col items-start gap-0.5 py-2.5">
-                      <p className="text-xs font-bold text-foreground">Payment due</p>
-                      <p className="text-[0.7rem] text-muted-foreground">Complete payment for your Cairo trip.</p>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                {/* Avatar */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <div className="ml-0.5 shrink-0">
-                      <GradientAvatar name={user.name} email={user.email} imageUrl={user.avatarUrl} size={32} interactive />
-                    </div>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 rounded-xl p-1">
-                    <div className="flex items-center gap-3 rounded-lg bg-gradient-bluesky-soft p-3 ring-1 ring-primary/10">
-                      <GradientAvatar name={user.name} email={user.email} imageUrl={user.avatarUrl} size={36} showOnline={false} />
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-bold text-foreground">{user.name ?? "Traveler"}</p>
-                        <p className="truncate text-xs text-muted-foreground">{user.email}</p>
-                      </div>
-                    </div>
-                    <DropdownMenuSeparator className="my-2" />
-                    <DropdownMenuItem onClick={() => router.push("/account")} className="gap-2.5 rounded-lg py-2"><User className="size-4 text-primary" /> My Profile</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push("/account?section=bookings")} className="gap-2.5 rounded-lg py-2"><Plane className="size-4 text-primary" /> My Bookings</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push("/account?section=wishlist")} className="gap-2.5 rounded-lg py-2"><Heart className="size-4 text-primary" /> Wishlist</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push("/account?section=payments")} className="gap-2.5 rounded-lg py-2"><CreditCard className="size-4 text-primary" /> Payments</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push("/account?section=preferences")} className="gap-2.5 rounded-lg py-2"><Settings className="size-4 text-primary" /> Settings</DropdownMenuItem>
-                    <DropdownMenuSeparator className="my-2" />
-                    <DropdownMenuItem onClick={() => { logout(); toast.success("Signed out"); }} className="gap-2.5 rounded-lg py-2 text-destructive"><LogOut className="size-4" /> Logout</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </>
-            ) : (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <div className="ml-0.5 shrink-0">
-                    <GradientAvatar icon={UserPlus} size={32} interactive pulse />
-                  </div>
+                  <button className="ml-0.5 shrink-0">
+                    <GradientAvatar name={user.name} email={user.email} imageUrl={user.avatarUrl} size={32} interactive />
+                  </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 rounded-xl p-1">
                   <div className="flex items-center gap-3 rounded-lg bg-gradient-bluesky-soft p-3 ring-1 ring-primary/10">
-                    <GradientAvatar icon={UserPlus} size={36} showOnline={false} />
-                    <div className="min-w-0">
-                      <p className="text-sm font-bold text-foreground">Welcome, Traveler</p>
-                      <p className="text-xs text-muted-foreground">Sign in to continue</p>
-                    </div>
+                    <GradientAvatar name={user.name} email={user.email} imageUrl={user.avatarUrl} size={36} showOnline={false} />
+                    <div className="min-w-0"><p className="truncate text-sm font-bold">{user.name}</p><p className="truncate text-xs text-muted-foreground">{user.email}</p></div>
                   </div>
                   <DropdownMenuSeparator className="my-2" />
-                  <DropdownMenuItem onClick={() => openAuth("login")} className="gap-2.5 rounded-lg py-2"><LogIn className="size-4 text-primary" /> Login</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => openAuth("register")} className="gap-2.5 rounded-lg py-2"><UserPlus className="size-4 text-primary" /> Create Account</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push("/account")} className="gap-2 rounded-lg"><User className="size-4 text-primary" /> Profile</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push("/account?section=bookings")} className="gap-2 rounded-lg"><Plane className="size-4 text-primary" /> Bookings</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push("/account?section=wishlist")} className="gap-2 rounded-lg"><Heart className="size-4 text-primary" /> Wishlist</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push("/account?section=settings")} className="gap-2 rounded-lg"><Settings className="size-4 text-primary" /> Settings</DropdownMenuItem>
+                  <DropdownMenuSeparator className="my-2" />
+                  <DropdownMenuItem onClick={() => { logout(); toast.success("Signed out"); }} className="gap-2 rounded-lg text-destructive"><LogOut className="size-4" /> Logout</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="ml-0.5 shrink-0">
+                    <GradientAvatar icon={UserPlus} size={32} interactive pulse />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 rounded-xl p-1">
+                  <div className="flex items-center gap-3 rounded-xl bg-gradient-bluesky-soft p-3 ring-1 ring-primary/10">
+                    <GradientAvatar icon={UserPlus} size={36} showOnline={false} />
+                    <div><p className="text-sm font-bold">Welcome, Traveler</p><p className="text-xs text-muted-foreground">Sign in to continue</p></div>
+                  </div>
+                  <DropdownMenuSeparator className="my-2" />
+                  <DropdownMenuItem onClick={() => openAuth("login")} className="gap-2 rounded-lg"><LogIn className="size-4 text-primary" /> Login</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => openAuth("register")} className="gap-2 rounded-lg"><UserPlus className="size-4 text-primary" /> Create Account</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
 
-            {/* Call Now — outline button */}
-            <a
-              href="tel:+202212345678"
-              className="hidden items-center gap-1.5 rounded-lg border border-border/60 bg-white/50 px-2.5 py-1.5 text-xs font-semibold text-foreground backdrop-blur-md transition-colors hover:bg-accent lg:inline-flex"
-              aria-label="Call Now"
-            >
+            {/* Call Now */}
+            <a href="tel:+202212345678" aria-label="Call Now"
+              className={cn("hidden items-center gap-1.5 rounded-xl border px-2.5 py-1.5 text-xs font-semibold transition-colors md:flex",
+                transparentHeader ? "border-white/30 text-white hover:bg-white/10" : "border-border/60 text-foreground hover:bg-accent")}>
               <Phone className="size-3.5 text-primary" />
-              <span className="hidden xl:inline">Call Now</span>
+              <span className="hidden lg:inline">Call Now</span>
             </a>
 
-            {/* Book Now — primary CTA */}
-            <button
-              onClick={() => router.push("/packages")}
-              className="rounded-lg bg-gradient-bluesky px-3 py-1.5 text-xs font-bold text-white shadow-glow-bluesky transition-transform hover:scale-105"
-            >
+            {/* Book Now */}
+            <button onClick={() => router.push("/packages")}
+              className="rounded-xl bg-gradient-bluesky px-3 py-1.5 text-xs font-bold text-white shadow-glow-bluesky transition-transform hover:scale-105">
               Book Now
             </button>
 
-            {/* Hamburger — tablet/mobile only */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
-              className="grid size-8 place-items-center rounded-lg text-foreground transition-colors hover:bg-accent lg:hidden"
-            >
-              {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            {/* Mobile hamburger */}
+            <button onClick={() => setMobileMenuOpen(!storeMenuOpen)} aria-label="Menu"
+              className={cn("grid size-8 place-items-center rounded-lg transition-colors lg:hidden",
+                transparentHeader ? "text-white hover:bg-white/10" : "text-foreground hover:bg-accent")}>
+              {storeMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile/Tablet menu */}
+      {/* Mobile menu */}
       <AnimatePresence>
-        {mobileMenuOpen && (
+        {storeMenuOpen && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 lg:hidden"
+            className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:hidden"
           >
-            <div className="mt-2 grid gap-1 rounded-2xl glass p-3 shadow-premium-lg">
+            <div className="mt-1 grid gap-1 rounded-2xl glass p-3 shadow-premium-lg">
               {NAV_ITEMS.map((item) => (
-                <a key={item.label} href={item.href} onClick={(e) => handleNavClick(e, item.href)} className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground/85 transition-colors hover:bg-accent hover:text-primary">
+                <button key={item.label} onClick={() => handleNav(item.href)}
+                  className={cn("flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+                    pathname === item.href ? "bg-primary/10 text-primary" : "text-foreground/85 hover:bg-accent")}>
                   {item.label}
-                </a>
+                </button>
               ))}
-              <div className="mt-2 flex items-center gap-2 border-t border-border/60 pt-3">
-                <a href="tel:+202212345678" className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-border/60 py-2.5 text-xs font-semibold text-foreground">
-                  <Phone className="size-3.5 text-primary" /> Call
-                </a>
-                {!isAuthenticated ? (
-                  <Button variant="outline" onClick={() => { openAuth("login"); setMobileMenuOpen(false); }} className="flex-1">Login</Button>
-                ) : (
-                  <Button variant="outline" onClick={() => { logout(); toast.success("Signed out"); setMobileMenuOpen(false); }} className="flex-1"><LogOut className="size-4" /> Sign out</Button>
-                )}
+              <div className="mt-2 border-t border-border/60 pt-2">
+                <a href="tel:+202212345678" className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground"><Phone className="size-4 text-primary" /> Call Now</a>
               </div>
             </div>
           </motion.div>

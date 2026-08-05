@@ -2,50 +2,52 @@
 
 import { AppProviders } from "@/components/providers/AppProviders";
 import { Hero } from "@/components/sections/Hero";
+import { SearchTours } from "@/components/sections/SearchTours";
+import { FeaturedDestinations } from "@/components/sections/FeaturedDestinations";
 import { AboutCompany } from "@/components/sections/AboutCompany";
 import { WhyChooseUs } from "@/components/sections/WhyChooseUs";
-import { FeaturedServices } from "@/components/sections/FeaturedServices";
 import { PopularTourPackages } from "@/components/sections/PopularTourPackages";
-import { Statistics } from "@/components/sections/Statistics";
+import { FeaturedServices } from "@/components/sections/FeaturedServices";
+import { LimitedOffers } from "@/components/sections/LimitedOffers";
 import { CustomerReviews } from "@/components/sections/CustomerReviews";
 import { InstagramGallery } from "@/components/sections/InstagramGallery";
+import { Statistics } from "@/components/sections/Statistics";
 import { Partners } from "@/components/sections/Partners";
 import { ContactCTA } from "@/components/sections/ContactCTA";
+import { ContactSection } from "@/components/sections/ContactSection";
 
 export default function Home() {
   return (
     <AppProviders>
       {/* 1. Hero */}
       <Hero />
-
-      {/* 2. About Company */}
+      {/* 2. Search Tours */}
+      <SearchTours />
+      {/* 3. Featured Destinations */}
+      <FeaturedDestinations />
+      {/* 4. About Company */}
       <AboutCompany />
-
-      {/* 3. Why Choose Us */}
+      {/* 5. Why Choose Us */}
       <WhyChooseUs />
-
-      {/* 4. Featured Services */}
-      <FeaturedServices />
-
-      {/* 5. Popular Tour Packages */}
+      {/* 6. Popular Tour Packages */}
       <PopularTourPackages />
-
-      {/* 6. Statistics */}
-      <Statistics />
-
-      {/* 7. Testimonials */}
+      {/* 7. Services */}
+      <FeaturedServices />
+      {/* 8. Special Offers */}
+      <LimitedOffers />
+      {/* 9. Testimonials */}
       <CustomerReviews />
-
-      {/* 8. Gallery Preview */}
+      {/* 10. Gallery Preview */}
       <InstagramGallery />
-
-      {/* 9. Partners */}
+      {/* 11. Travel Statistics */}
+      <Statistics />
+      {/* 12. Partners */}
       <Partners />
-
-      {/* 10. Contact CTA */}
+      {/* 13. Call To Action */}
       <ContactCTA />
-
-      {/* 11. Footer (rendered by AppProviders) */}
+      {/* 14. Contact Preview */}
+      <ContactSection />
+      {/* 15. Footer (rendered by AppProviders) */}
     </AppProviders>
   );
 }
