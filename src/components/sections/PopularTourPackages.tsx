@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Heart, Eye } from "lucide-react";
+import { ArrowRight, Heart, Eye, Star, MapPin, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionTitle } from "@/components/common/SectionTitle";
 import { Reveal } from "@/components/common/Reveal";
@@ -12,20 +12,22 @@ import { formatPrice, formatTripDuration, discountPct, cn } from "@/lib/utils";
 import { getFeaturedTrips } from "@/services";
 import { useUI } from "@/stores/use-ui";
 import { useWishlist } from "@/stores/use-wishlist";
+import { useBooking } from "@/stores/use-booking";
 import { countryName } from "@/data";
 
 export function PopularTourPackages() {
-  const trips = getFeaturedTrips(6);
+  const trips = getFeaturedTrips(8);
   const openBooking = useUI((s) => s.openBooking);
   const setTripDetailId = useUI((s) => s.setTripDetailId);
   const { toggle, has } = useWishlist();
+  const openBookingFlow = useBooking((s) => s.open);
   const router = useRouter();
 
   return (
     <section id="packages" className="relative overflow-hidden py-16 sm:py-20 lg:py-24">
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute left-1/4 top-1/4 size-80 rounded-full bg-primary/8 blur-3xl" />
-        <div className="absolute right-1/4 bottom-1/4 size-80 rounded-full bg-accent/8 blur-3xl" />
+        <div className="absolute left-1/4 top-1/4 size-80 rounded-full bg-primary/5 blur-3xl" />
+        <div className="absolute right-1/4 bottom-1/4 size-80 rounded-full bg-accent/5 blur-3xl" />
       </div>
 
       <div className="container mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
@@ -34,7 +36,7 @@ export function PopularTourPackages() {
           title={<>Popular <span className="text-gradient-bluesky">tour packages</span></>}
           description="Handpicked journeys loved by thousands of travelers worldwide."
           action={
-            <Button variant="outline" className="rounded-xl" onClick={() => router.push("/packages")}>
+            <Button variant="outline" className="rounded-xl gap-2" onClick={() => router.push("/packages")}>
               View All Packages
               <ArrowRight className="size-4" />
             </Button>
@@ -50,9 +52,9 @@ export function PopularTourPackages() {
                 <motion.article
                   whileHover={{ y: -6 }}
                   transition={{ type: "spring", stiffness: 280, damping: 24 }}
-                  className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-premium transition-shadow hover:shadow-premium-lg"
+                  className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-border/60 bg-card shadow-premium transition-shadow hover:shadow-premium-lg"
                 >
-                  {/* Image — clicking navigates to trip details page */}
+                  {/* Image */}
                   <div
                     className="relative aspect-[4/3] cursor-pointer overflow-hidden"
                     onClick={() => router.push(`/packages/${trip.slug}`)}
@@ -64,20 +66,30 @@ export function PopularTourPackages() {
                       sizes="(max-width: 768px) 100vw, 25vw"
                       className="object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
+                    {/* Badges */}
                     <div className="absolute left-3 top-3 flex items-center gap-2">
                       {pct > 0 && (
-                        <span className="inline-flex items-center rounded-full bg-rose-500 px-2.5 py-1 text-xs font-bold text-white">
+                        <span className="inline-flex items-center rounded-md bg-rose-500 px-2 py-0.5 text-xs font-bold text-white">
                           -{pct}%
                         </span>
                       )}
                       {trip.featured && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-400 px-2.5 py-1 text-xs font-bold text-amber-950">
-                          ★ Featured
+                        <span className="inline-flex items-center gap-1 rounded-md bg-amber-400 px-2 py-0.5 text-xs font-bold text-amber-950">
+                          <Star className="size-3 fill-amber-950" /> Featured
                         </span>
                       )}
                     </div>
+
+                    {/* Quick view (eye icon) */}
+                    <button
+                      aria-label="Quick view"
+                      onClick={(e) => { e.stopPropagation(); e.preventDefault(); setTripDetailId(trip.id); }}
+                      className="absolute bottom-3 right-3 grid size-9 place-items-center rounded-full bg-white/80 text-foreground opacity-0 backdrop-blur-md transition-all hover:bg-white hover:text-primary group-hover:opacity-100"
+                    >
+                      <Eye className="size-4" />
+                    </button>
 
                     {/* Wishlist */}
                     <button
@@ -91,35 +103,34 @@ export function PopularTourPackages() {
                       <Heart className={cn("size-4", isWishlisted && "fill-current")} />
                     </button>
 
-                    {/* Quick View eye icon — opens modal */}
-                    <button
-                      aria-label="Quick view"
-                      onClick={(e) => { e.stopPropagation(); setTripDetailId(trip.id); }}
-                      className="absolute bottom-3 right-3 grid size-9 place-items-center rounded-full bg-white/70 text-foreground backdrop-blur-md transition-all hover:bg-white hover:text-primary"
-                    >
-                      <Eye className="size-4" />
-                    </button>
-
-                    <div className="absolute inset-x-3 bottom-3 flex items-center gap-2">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-black/45 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-md">
-                        📍 {countryName(trip.countryId)}
+                    {/* Location + duration */}
+                    <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-2">
+                      <span className="inline-flex items-center gap-1 rounded-md bg-black/50 px-2 py-0.5 text-xs font-medium text-white backdrop-blur-md">
+                        <MapPin className="size-3" /> {countryName(trip.countryId)}
                       </span>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-black/45 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-md">
-                        🕐 {formatTripDuration(trip.durationDays)}
+                      <span className="inline-flex items-center gap-1 rounded-md bg-black/50 px-2 py-0.5 text-xs font-medium text-white backdrop-blur-md">
+                        <Clock className="size-3" /> {formatTripDuration(trip.durationDays)}
                       </span>
                     </div>
                   </div>
 
+                  {/* Content */}
                   <div className="flex flex-1 flex-col gap-3 p-5">
-                    {/* Title — clicking navigates to trip details page */}
+                    {/* Title — clickable, navigates to detail page */}
                     <h3
-                      className="line-clamp-2 cursor-pointer text-base font-bold leading-snug text-foreground group-hover:text-primary"
                       onClick={() => router.push(`/packages/${trip.slug}`)}
+                      className="line-clamp-2 cursor-pointer text-base font-bold leading-snug text-foreground transition-colors hover:text-primary"
                     >
                       {trip.title}
                     </h3>
+
+                    {/* Summary */}
                     <p className="line-clamp-2 text-sm text-muted-foreground">{trip.summary}</p>
-                    <StarRating rating={trip.rating} showValue reviewCount={trip.reviewCount} />
+
+                    {/* Rating */}
+                    <div className="flex items-center gap-2">
+                      <StarRating rating={trip.rating} showValue reviewCount={trip.reviewCount} />
+                    </div>
 
                     {/* Highlights */}
                     <div className="flex flex-wrap gap-1.5">
@@ -130,6 +141,7 @@ export function PopularTourPackages() {
                       ))}
                     </div>
 
+                    {/* Price + Book */}
                     <div className="mt-auto flex items-center justify-between gap-3 border-t border-border/60 pt-3">
                       <div className="flex flex-col">
                         <span className="text-[0.7rem] font-medium uppercase tracking-wider text-muted-foreground">From</span>
@@ -140,10 +152,9 @@ export function PopularTourPackages() {
                           )}
                         </div>
                       </div>
-                      {/* Book Now — opens booking flow */}
                       <Button
                         size="sm"
-                        onClick={() => openBooking(trip.id)}
+                        onClick={(e) => { e.stopPropagation(); openBookingFlow(trip.id); }}
                         className="bg-gradient-bluesky shadow-glow-bluesky"
                       >
                         Book Now
