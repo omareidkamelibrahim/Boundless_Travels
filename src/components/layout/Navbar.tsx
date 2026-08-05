@@ -218,9 +218,9 @@ export function Navbar() {
             {isAuthenticated && user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="ml-0.5 shrink-0">
+                  <div className="ml-0.5 shrink-0 cursor-pointer">
                     <GradientAvatar name={user.name} email={user.email} imageUrl={user.avatarUrl} size={32} interactive />
-                  </button>
+                  </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 rounded-xl p-1">
                   <div className="flex items-center gap-3 rounded-lg bg-gradient-bluesky-soft p-3 ring-1 ring-primary/10">
@@ -239,9 +239,9 @@ export function Navbar() {
             ) : (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="ml-0.5 shrink-0">
+                  <div className="ml-0.5 shrink-0 cursor-pointer">
                     <GradientAvatar icon={UserPlus} size={32} interactive pulse />
-                  </button>
+                  </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 rounded-xl p-1">
                   <div className="flex items-center gap-3 rounded-xl bg-gradient-bluesky-soft p-3 ring-1 ring-primary/10">
